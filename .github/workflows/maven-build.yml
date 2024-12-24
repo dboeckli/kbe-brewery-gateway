@@ -138,7 +138,10 @@ jobs:
         if: always()
         with:
           files: |
-            echo "### debug start"
+            echo "### debug start tree"
             tree
-            echo "### debug end"
+            echo "### debug end tree"
+            echo "### debug start pwd"
+            pwd
+            echo "### debug end pwd"
             ./target/surefire-reports/TEST-*.xml    
