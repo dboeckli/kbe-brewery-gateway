@@ -149,5 +149,4 @@ jobs:
         if: always()
         with:
           files: |
-            ./target/surefire-reports/TEST-*.xml   
-            target/surefire-reports/**/*.xml
+            target/surefire-reports/TEST-*.xml
