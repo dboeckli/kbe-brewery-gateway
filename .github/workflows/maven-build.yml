@@ -133,17 +133,6 @@ jobs:
           fi
           mvn -B -e deploy -s $GITHUB_WORKSPACE/settings.xml
           
-      - name: debug
-        id: debug-todo
-        shell: bash
-        run: |
-          echo "### debug start tree"
-          tree
-          echo "### debug end tree"
-          echo "### debug start pwd"
-          pwd
-          echo "### debug end pwd"
-      
       - name: Publish Test Results
         uses: EnricoMi/publish-unit-test-result-action@v2
         if: always()
