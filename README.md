@@ -1,7 +1,8 @@
-# Spring Boot 6 Template Project
+# SFG Beer Works - Brewery Microservices
 
-## Introduction
-This project serves as a template for Spring Boot 6 applications. It provides a solid foundation for quickly starting new Spring Boot projects with pre-configured settings and best practices.
+This project has a services of microservices for deployment via Docker Compose and Kubernetes.
+
+You can access the API documentation [here](https://sfg-beer-works.github.io/brewery-api/#tag/Beer-Service)
 
 ## Prerequisites
 - GitHub account
