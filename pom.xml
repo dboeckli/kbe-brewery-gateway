@@ -8,11 +8,9 @@
         <relativePath /> <!-- lookup parent from repository -->
     </parent>
 
-    <!-- TODO: RENAME ME -->
-    <groupId>ch.dboeckli.template</groupId>
-    <!-- TODO: RENAME ME -->
-    <artifactId>spring-6-project-template</artifactId>
-    <version>0.0.13-SNAPSHOT</version>
+    <groupId>ch.dboeckli.springframeworkguru.kbe</groupId>
+    <artifactId>kbe-brewery-gateway</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
 
     <name>${project.artifactId}</name>
     <description>${project.artifactId}</description>
