@@ -8,11 +8,9 @@
         <relativePath /> <!-- lookup parent from repository -->
     </parent>
 
-    <!-- TODO: RENAME ME -->
-    <groupId>ch.dboeckli.template</groupId>
-    <!-- TODO: RENAME ME -->
-    <artifactId>spring-6-project-template</artifactId>
-    <version>0.0.13-SNAPSHOT</version>
+    <groupId>ch.dboeckli.springframeworkguru.kbe</groupId>
+    <artifactId>kbe-brewery-gateway</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
 
     <name>${project.artifactId}</name>
     <description>${project.artifactId}</description>
@@ -26,6 +24,11 @@
 
     <properties>
         <java.version>21</java.version>
+        <!--
+           Please use the following instructions: https://spring.io/projects/spring-cloud
+           Please refer to the section: "Table 1. Release train Spring Boot compatibility"
+         -->
+        <spring-cloud.version>2024.0.0</spring-cloud.version>
 
         <organization.name>dboeckli</organization.name>
 
@@ -97,14 +100,26 @@
         </repository>
     </distributionManagement>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-gateway</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

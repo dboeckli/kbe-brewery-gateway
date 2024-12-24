@@ -1,7 +1,8 @@
-# Spring Boot 6 Template Project
+# SFG Beer Works - Brewery Microservices
 
-## Introduction
-This project serves as a template for Spring Boot 6 applications. It provides a solid foundation for quickly starting new Spring Boot projects with pre-configured settings and best practices.
+This project has a services of microservices for deployment via Docker Compose and Kubernetes.
+
+You can access the API documentation [here](https://sfg-beer-works.github.io/brewery-api/#tag/Beer-Service)
 
 ## Prerequisites
 - GitHub account
@@ -38,7 +39,7 @@ This project serves as a template for Spring Boot 6 applications. It provides a 
 1. Add the following secrets in your GitHub project settings:
     - `DOCKER_USER`
     - `DOCKER_ACCESS_TOKEN`
-    - - `RELEASE_TOKEN`: A GitHub Personal Access Token with permissions to push to the master branch
+    - `RELEASE_TOKEN`: A GitHub Personal Access Token with permissions to push to the master branch
     - To create this token:
         1. Go to GitHub Settings > Developer settings > Personal access tokens
         2. Click "Generate new token" (classic)
