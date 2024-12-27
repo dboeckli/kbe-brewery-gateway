@@ -3,7 +3,7 @@
 This project has a services of microservices for deployment via Docker Compose and Kubernetes.
 
 You can access the API documentation [here](https://sfg-beer-works.github.io/brewery-api/#tag/Beer-Service)
-For the kubernets setup go here: 
+Official Website: https://kubebyexample.com
 
 ## Overview
 
