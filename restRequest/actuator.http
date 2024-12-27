@@ -2,6 +2,10 @@
 GET http://localhost:8080/actuator
 Accept: application/json
 
+### Kubernetes: list beers direct. here we first need to retrive the random port  with the kubectl get all command
+GET http://localhost:31975/actuator
+Accept: application/json
+
 ### actuator info
 GET http://localhost:8080/actuator/info
 Accept: application/json

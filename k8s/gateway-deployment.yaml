@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: gateway
+  name: gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gateway
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: gateway
+      annotations:
+        co.elastic.logs/enabled: "true"
+        co.elastic.logs.json-logging/json.keys_under_root: "true"
+        co.elastic.logs.json-logging/json.add_error_key: "true"
+        co.elastic.logs.json-logging/json.message_key: "message"  
+    spec:
+      containers:
+      - image: springframeworkguru/kbe-brewery-gateway
+        name: kbe-brewery-gateway
+        resources: {}
+        env:
+          - name: MANAGEMENT_ENDPOINT_HEALTH_PROBES_ENABLED
+            value: "true"
+          - name: MANAGEMENT_HEALTH_READINESSTATE_ENABLED
+            value: "true"
+          - name: MANAGEMENT_HEALTH_LIVENESSSTATE_ENABLED
+            value: "true"
+          - name: SERVER_SHUTDOWN
+            value: "graceful"
+        readinessProbe:
+          httpGet:
+            port: 9090
+            path: /actuator/health/readiness
+        livenessProbe:
+          httpGet:
+            port: 9090
+            path: /actuator/health/liveness
+        lifecycle:
+          preStop:
+            exec:
+              command: [ "sh", "-c", "sleep 10" ]    
+status: {}

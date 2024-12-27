@@ -3,96 +3,74 @@
 This project has a services of microservices for deployment via Docker Compose and Kubernetes.
 
 You can access the API documentation [here](https://sfg-beer-works.github.io/brewery-api/#tag/Beer-Service)
+Official Website: https://kubebyexample.com
 
-## Prerequisites
-- GitHub account
-- Git
-- JDK 21 or later
-- Maven
-- IntelliJ IDEA (recommended) or any preferred IDE
-- Docker account (for image publishing)
+## Overview
 
-## Getting Started
+This project depends on several other projects and components which are all in the compose-local.yaml
 
-### 1. Project Setup
-1. In GitHub, create a new project using this template.
-2. In the new project's Settings:
-    - Enable 'Automatically delete head branches'
-    - Enable 'Always suggest updating pull request branches'
-3. Set Branch Protection Rules similar to this template project.
+projects:
+Each projects is a microservice with its own repository. you can build those with mvn install. this will push
+an image to your local docker image repos with the name: local/.....
+for simplicity we use the images create by springframeworkguru, so the prefix is: springframeworkguru/
 
-### 2. Local Development Setup
-1. Clone the newly created project.
-2. Configure Maven settings in your IDE:
-    - Point to a valid `settings.xml` for GitHub dependency resolution.
-    - Set local Maven repository outside of Microsoft's cloud (e.g., `C:\development\tools\maven-repo`).
-3. Create a feature branch for your changes.
+- inventory
+- beer-service
+- order-service
+- inventory-failover
+components:
+- API Gateway
+- Service Discovery (Eureka)
+- Config Server
+- Circuit Breaker (Resilience4j)
+- Distributed Tracing (Zipkin)
+- Message Broker (RabbitMQ)
+- Database (MySQL)
+- Caching (Redis)
+- Monitoring (Prometheus & Grafana)
 
-### 3. Project Customization
-1. Search for TODOs in the project and update the following:
-    - Rename `group-id` and `artifact-id` in `pom.xml`
-    - Update `name` in `application.yaml`
-    - Ensure all names match your GitHub project name
-2. Rename packages and classes as needed.
+## Commands
+- Start everything
+```bash 
+docker compose -f compose-local.yaml up -d
+```
 
-### 4. GitHub Configuration
-1. Add the following secrets in your GitHub project settings:
-    - `DOCKER_USER`
-    - `DOCKER_ACCESS_TOKEN`
-    - `RELEASE_TOKEN`: A GitHub Personal Access Token with permissions to push to the master branch
-    - To create this token:
-        1. Go to GitHub Settings > Developer settings > Personal access tokens
-        2. Click "Generate new token" (classic)
-        3. Give it a descriptive name (e.g., "Release Token for [Your Project Name]")
-        4. Set the expiration as needed
-        5. Select at least these scopes: `repo`, `write:packages`
-        6. Generate the token and copy it immediately
-    - Add this token as a secret named `RELEASE_TOKEN` in your repository settings
+- Stop all
+```bash 
+docker compose -f compose-local.yaml stop
+```
 
-### 5. Build and Deployment
-1. Trigger a rebuild in GitHub Actions.
-2. Upon successful build:
-    - A Docker image will be pushed to GitHub Packages and Docker Hub.
-    - Access your Docker Hub repository: https://hub.docker.com/repositories/domboeckli
-    - Change the Docker Hub image visibility from private to public to unlock it.
+- Stop and Remove all
+```bash 
+docker compose -f compose-local.yaml down
+```
 
-### 6. Release
-To create a new release:
+- Check what is running
+```bash 
+docker ps
+```
 
-1. Ensure you are on the main branch and it is up to date:
-2. Run the release workflow:
-- Go to your GitHub repository
-- Navigate to the "Actions" tab
-- Select the "Maven Release" workflow
-- Click "Run workflow"
-- Choose the main branch and click "Run workflow"
-3. The workflow will:
-- Check if you're on the main branch
-- Verify that the current version is a SNAPSHOT
-- Prepare the release (update versions, create tag)
-- Perform the release (build, test, and deploy)
-- Push changes back to the repository
-4. After the workflow completes successfully:
-- A new release tag will be created in your repository
-- The project version in pom.xml will be updated
-- A new Docker image with the release version will be pushed to Docker Hub
-5. Verify the release:
-- Check the releases page on GitHub
-- Confirm the new version in pom.xml on the main branch
-- Verify the new Docker image on Docker Hub
+- Rebuild filebeat
 
-Note: Ensure all required secrets (RELEASE_TOKEN, DOCKER_USER, DOCKER_ACCESS_TOKEN) are properly set in your GitHub repository settings before running the release workflow.
+Remark: is using the directory under filebeat. there is a Dockerfile and yml file for configuration.
+```bash 
+ docker-compose -f compose-local.yaml build filebeat
+```  
 
 
-## Additional Information
-- The initial build in GitHub may fail. Follow the steps above to resolve any issues.
-- Ensure all TODOs are addressed before considering the setup complete.
-- For any issues or improvements, please create a GitHub issue in the project repository.
 
-## Contributing
-Contributions to improve this template are welcome. Please follow the standard GitHub flow:
-1. Fork the repository
-2. Create a feature branch
-3. Commit your changes
-4. Push to the branch
-5. Create a new Pull Request
+After installation you can access the kibana web gui and check the log. first you need a little configuration described below
+
+Open elastic search/kibana:
+with browser open url: http://localhost:5601/app/home#/
+
+Initially go to discover -> create index pattern: filebeet* -> next -> add @timestamp -> create index pattern
+Go back to discover: there you will see log statement from different services
+
+## Kubernetes
+
+[Kubernetes Documentation](k8s/KubeCommands.md)
+
+The approach having all kubernetes files of the other projects here should be reworked. the kubernetes files should go into the
+appropriate projects, templating with helm and deployment into a kubernetes environment should be considered.
+
