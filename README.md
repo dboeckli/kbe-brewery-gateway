@@ -50,6 +50,15 @@ docker compose -f compose-local.yaml down
 docker ps
 ```
 
+- Rebuild filebeat
+
+Remark: is using the directory under filebeat. there is a Dockerfile and yml file for configuration.
+```bash 
+ docker-compose -f compose-local.yaml build filebeat
+```  
+
+
+
 After installation you can access the kibana web gui and check the log. first you need a little configuration described below
 
 Open elastic search/kibana:

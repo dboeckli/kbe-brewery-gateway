@@ -70,6 +70,15 @@ kubectl logs order-service-<pod-id>
 ```bash 
 kubectl logs gateway-<pod-id>
 ```
+```bash 
+kubectl logs elasticsearch-<pod-id>
+```
+```bash 
+kubectl logs kibana-<pod-id>
+```
+```bash 
+kubectl logs filebeat-<pod-id>
+```
 
 ### Delete all services and deployments
 ```bash
@@ -93,6 +102,14 @@ kubectl delete deployment order-service
 
 kubectl delete service gateway
 kubectl delete deployment gateway
+
+kubectl delete service elasticsearch
+kubectl delete deployment elasticsearch
+
+kubectl delete service kibana
+kubectl delete deployment kibana
+
+kubectl delete service -f filebeat-kubernetes.yaml
 ```
 If you have a complex installation use the yaml file for deletion. for example:
 ```bash
