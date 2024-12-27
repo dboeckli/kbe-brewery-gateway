@@ -85,8 +85,8 @@ kubectl logs filebeat-<pod-id>
 kubectl delete service mysql
 kubectl delete deployment mysql
 
-kubectl delete service jms
-kubectl delete deployment jms
+kubectl delete service activemq-artemis
+kubectl delete deployment activemq-artemis
 
 kubectl delete service beer-service
 kubectl delete deployment beer-service
