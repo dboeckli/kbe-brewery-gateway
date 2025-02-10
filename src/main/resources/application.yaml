@@ -7,6 +7,8 @@ spring:
   docker:
     compose:
       enabled: false
+      stop:
+        command: down
 
 management:
   health:
