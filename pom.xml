@@ -15,10 +15,14 @@
     <name>${project.artifactId}</name>
     <description>${project.artifactId}</description>
 
+    <organization>
+        <name>dboeckli</name>
+    </organization>
+
     <scm>
-        <connection>scm:git:https://github.com/${organization.name}/${project.artifactId}.git</connection>
-        <developerConnection>scm:git:https://github.com/${organization.name}/${project.artifactId}.git</developerConnection>
-        <url>https://github.com/${organization.name}/${project.artifactId}.git</url>
+        <connection>scm:git:https://github.com/${project.organization.name}/${project.artifactId}.git</connection>
+        <developerConnection>scm:git:https://github.com/${project.organization.name}/${project.artifactId}.git</developerConnection>
+        <url>https://github.com/${project.organization.name}/${project.artifactId}.git</url>
         <tag>HEAD</tag>
     </scm>
 
@@ -30,10 +34,9 @@
          -->
         <spring-cloud.version>2024.0.0</spring-cloud.version>
 
-        <organization.name>dboeckli</organization.name>
-
         <github.acions.build>false</github.acions.build>
         <skip.docker.publish>true</skip.docker.publish>
+        <skip.start.stop.springboot>false</skip.start.stop.springboot>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>21</maven.compiler.source>
@@ -46,6 +49,7 @@
         <spring-6-rest-mvc-api.version>0.0.1-SNAPSHOT</spring-6-rest-mvc-api.version>
 
         <!-- Sonar -->
+        <sonar-maven-plugin.version>5.0.0.4389</sonar-maven-plugin.version>
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
         <sonar.language>java</sonar.language>
@@ -68,7 +72,7 @@
             Configure maven settings of IntelliJ to use your personal settings.xml
             -->
             <id>github</id>
-            <url>https://maven.pkg.github.com/${organization.name}/${project.artifactId}</url>
+            <url>https://maven.pkg.github.com/${project.organization.name}/${project.artifactId}</url>
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
@@ -96,7 +100,7 @@
         <repository>
             <id>github</id>
             <name>GitHub dboeckli Apache Maven Packages</name>
-            <url>https://maven.pkg.github.com/${organization.name}/${project.artifactId}</url>
+            <url>https://maven.pkg.github.com/${project.organization.name}/${project.artifactId}</url>
         </repository>
     </distributionManagement>
 
@@ -215,11 +219,15 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler-plugin.version}</version>
                 <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
                     <annotationProcessorPaths>
                         <path>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
@@ -241,7 +249,7 @@
                         </exclude>
                     </excludes>
                 </configuration>
-                
+
                 <executions>
                     <execution>
                         <id>add-build-infos</id>
@@ -254,7 +262,6 @@
                                 <javaVersion>${java.version}</javaVersion>
                                 <javaVendor>${java.vendor}</javaVendor>
                                 <commit-id>${buildNumber}</commit-id>
-                                <!--<docker-repository>${docker.push.repository}/${docker.image.prefix}/${project.artifactId}</docker-repository>-->
                             </additionalProperties>
                         </configuration>
                     </execution>
@@ -265,10 +272,12 @@
                             <goal>start</goal>
                             <goal>stop</goal>
                         </goals>
+                        <phase>post-integration-test</phase>
                         <configuration>
+                            <skip>${skip.start.stop.springboot}</skip>
                             <wait>1000</wait> <!-- 1000 milliseconds is default -->
                             <maxAttempts>120</maxAttempts> <!-- 30 attempts is default, combined with wait it results to 30 sec. We wait 60 seconds. -->
-                            <profiles>local</profiles>
+                            <profiles>docker</profiles>
                             <arguments>
                                 <argument>-Xmx1024m</argument>
                                 <argument>--server.port=${tomcat.http.port}</argument>
@@ -304,9 +313,9 @@
                         <configuration>
                             <skip>${skip.docker.publish}</skip>
                             <image>
-                                <name>ghcr.io/${organization.name}/${project.artifactId}:latest</name>
+                                <name>ghcr.io/${project.organization.name}/${project.artifactId}:latest</name>
                                 <tags>
-                                    ghcr.io/${organization.name}/${project.artifactId}:${project.version}
+                                    ghcr.io/${project.organization.name}/${project.artifactId}:${project.version}
                                 </tags>
                                 <publish>true</publish>
                             </image>
@@ -356,19 +365,6 @@
             </plugin>
 
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-failsafe-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>integration-test</goal>
-                            <goal>verify</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>${jacoco.version}</version>
@@ -388,8 +384,44 @@
                             <goal>report</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>target/jacoco-reports</outputDirectory>
+                            <formats>
+                                <format>XML</format>
+                            </formats>
+                            <outputDirectory>target/site/jacoco</outputDirectory> <!-- default -->
                         </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <configuration>
+                            <!--suppress UnresolvedMavenProperty. argline is set by jacoco -->
+                            <argLine>${argLine} -XX:+EnableDynamicAgentLoading -Xshare:off</argLine>
+                        </configuration>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <configuration>
+                            <!--suppress UnresolvedMavenProperty. argline is set by jacoco -->
+                            <argLine>${argLine} -XX:+EnableDynamicAgentLoading -Xshare:off</argLine>
+                        </configuration>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>
