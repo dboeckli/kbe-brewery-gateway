@@ -32,17 +32,17 @@ components:
 ## Commands
 - Start everything
 ```bash 
-docker compose -f compose-local.yaml up -d
+docker compose -f docker-manual/compose-local.yaml up -d
 ```
 
 - Stop all
 ```bash 
-docker compose -f compose-local.yaml stop
+docker compose -f docker-manual/compose-local.yaml stop
 ```
 
 - Stop and Remove all
 ```bash 
-docker compose -f compose-local.yaml down
+docker compose -f docker-manual/compose-local.yaml down
 ```
 
 - Check what is running
@@ -54,17 +54,15 @@ docker ps
 
 Remark: is using the directory under filebeat. there is a Dockerfile and yml file for configuration.
 ```bash 
- docker-compose -f compose-local.yaml build filebeat
+ docker-compose -f docker-manual/compose-local.yaml build filebeat
 ```  
-
-
 
 After installation you can access the kibana web gui and check the log. first you need a little configuration described below
 
 Open elastic search/kibana:
 with browser open url: http://localhost:5601/app/home#/
 
-Initially go to discover -> create index pattern: filebeet* -> next -> add @timestamp -> create index pattern
+Initially go to discover -> create index pattern: filebeat* -> next -> add @timestamp -> create index pattern
 Go back to discover: there you will see log statement from different services
 
 ## Kubernetes

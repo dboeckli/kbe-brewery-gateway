@@ -6,6 +6,10 @@ Accept: application/json
 GET http://localhost:8080/api/v1/beer/
 Accept: application/json
 
+### Docker Compose: list beers direct
+GET http://host.docker.internal:8080/api/v1/beer/
+Accept: application/json
+
 ### Kubernetes: list beers direct. here we first need to retrive the random port  with the kubectl get all command
 GET http://localhost:31975/api/v1/beer/
 Accept: application/json
