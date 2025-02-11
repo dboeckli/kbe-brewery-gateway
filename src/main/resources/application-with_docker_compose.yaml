@@ -6,24 +6,25 @@ spring:
     name: kbe-brewery-gateway
   docker:
     compose:
-      enabled: false
+      enabled: true
       stop:
         command: down
+        
   cloud:
     gateway:
       routes:
         - id: beer-service
-          uri: http://localhost:8080
+          uri: http://host.docker.internal:8080
           predicates:
             - Path=/api/v1/beer/*,/api/v1/beerUpc/*
         - id: inventory-service
-          uri: http://localhost:8082
+          uri: http://host.docker.internal:8082
           predicates:
             - Path=/api/v1/beer/*/inventory
         - id: order-service
-          uri: http://localhost:8081
+          uri: http://host.docker.internal:8081
           predicates:
-            - Path=/api/v1/customers/**      
+            - Path=/api/v1/customers/** 
 
 management:
   health:
