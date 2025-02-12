@@ -9,7 +9,8 @@ spring:
       enabled: true
       stop:
         command: down
-        
+      skip:
+        in-tests: false
   cloud:
     gateway:
       routes:
