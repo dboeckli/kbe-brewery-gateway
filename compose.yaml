@@ -53,7 +53,7 @@ services:
   
   jms:
     container_name: jms
-    image: apache/activemq-artemis:2.39.0
+    image: apache/activemq-artemis:2.40.0
     environment:
       ARTEMIS_USER: artemis
       ARTEMIS_PASSWORD: simetraehcapa
