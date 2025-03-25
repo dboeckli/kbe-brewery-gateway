@@ -18,7 +18,7 @@ services:
         depends_on:
             - elasticsearch
     filebeat:
-        image: docker.elastic.co/beats/filebeat:7.17.28
+        image: docker.elastic.co/beats/filebeat:8.17.4
         volumes:
             - ./filebeat/filebeat.docker.yml:/usr/share/filebeat/filebeat.yml # Remove :ro
             #- ./filebeat/filebeat.docker.yml:/usr/share/filebeat/filebeat.yml:ro # Configuration file
