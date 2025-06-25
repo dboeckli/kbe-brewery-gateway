@@ -25,7 +25,7 @@ services:
   
   kibana:
     container_name: kibana
-    image: docker.elastic.co/kibana/kibana:7.17.28
+    image: docker.elastic.co/kibana/kibana:7.17.29
     ports:
       - 5601:5601
     restart: on-failure
