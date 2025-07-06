@@ -43,6 +43,31 @@ spec:
             - name: JAVA_TIMEZONE
               value: "{{ .Values.global.timezone }}"
 
+            # ROUTE FOR beer-service
+            - name: SPRING_CLOUD_GATEWAY_SERVER_WEBFLUX_ROUTES_0_ID
+              value: "beer-service"
+            - name: SPRING_CLOUD_GATEWAY_SERVER_WEBFLUX_ROUTES_0_URI
+              value: "http://{{ .Values.beerService.serviceFQDN }}:{{ .Values.beerService.port }}"
+            - name: SPRING_CLOUD_GATEWAY_SERVER_WEBFLUX_ROUTES_0_PREDICATES_0
+              value: "Path=/api/v1/beer,/api/v1/beer/*,/api/v1/beerUpc/*"
+
+            # ROUTE FOR inventory-service
+            - name: SPRING_CLOUD_GATEWAY_SERVER_WEBFLUX_ROUTES_1_ID
+              value: "inventory-service"
+            - name: SPRING_CLOUD_GATEWAY_SERVER_WEBFLUX_ROUTES_1_URI
+              value: "http://{{ .Values.inventoryService.serviceFQDN }}:{{ .Values.inventoryService.port }}"
+            - name: SPRING_CLOUD_GATEWAY_SERVER_WEBFLUX_ROUTES_1_PREDICATES_0
+              value: "Path=/api/v1/beer/*/inventory"
+
+            # ROUTE FOR order-service
+            - name: SPRING_CLOUD_GATEWAY_SERVER_WEBFLUX_ROUTES_2_ID
+              value: "order-service"
+            - name: SPRING_CLOUD_GATEWAY_SERVER_WEBFLUX_ROUTES_2_URI
+              value: "http://{{ .Values.orderService.serviceFQDN }}:{{ .Values.orderService.port }}"
+            - name: SPRING_CLOUD_GATEWAY_SERVER_WEBFLUX_ROUTES_2_PREDICATES_0
+              value: "Path=/api/v1/customers/**"
+
+
           envFrom:
             - secretRef:
                 name: {{ include "application-template.fullname" . }}-spring-secrets
