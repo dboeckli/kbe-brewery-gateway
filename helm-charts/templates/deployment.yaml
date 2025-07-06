@@ -31,7 +31,7 @@ spec:
         - name: wait-for-beer-service
           image: busybox:1.37.0
           command: [ 'sh', '-c', 'until nc -z {{ .Values.beerService.serviceFQDN  }} {{ .Values.beerService.port }}; do echo "[busybox: wait-for-beer-service] waiting for beer service"; sleep 2; done; echo "[busybox: wait-for-beer-service] beer service is available"' ]
-        - name: wait-for-beer-service
+        - name: wait-for-order-service
           image: busybox:1.37.0
           command: [ 'sh', '-c', 'until nc -z {{ .Values.orderService.serviceFQDN  }} {{ .Values.orderService.port }}; do echo "[busybox: wait-for-order-service] waiting for order service"; sleep 2; done; echo "[busybox: wait-for-order-service] order service is available"' ]
 

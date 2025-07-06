@@ -130,10 +130,10 @@ beer-service:
 order-service:
   jms:
     enabled: false
-    serviceFQDN: "kbe-brewery-gateway-inventory-service.kbe-brewery-gateway.svc.cluster.local"
+    serviceFQDN: "kbe-brewery-gateway-jms.kbe-brewery-gateway.svc.cluster.local"
   mysql:
     enabled: false
-    serviceFQDN: "kbe-brewery-gateway-inventory-service.kbe-brewery-gateway.svc.cluster.local"
+    serviceFQDN: "kbe-brewery-gateway-mysql.kbe-brewery-gateway.svc.cluster.local"
   inventoryService:
     enabled: false
   inventoryFailover:
