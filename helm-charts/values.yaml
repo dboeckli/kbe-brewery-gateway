@@ -1,0 +1,155 @@
+global:
+  timezone: Europe/Zurich
+  timezonePath: /etc/localtime
+  springDebug: false
+  namespace: kbe-brewery-gateway
+
+replicaCount: 1
+
+image:
+  repository: @docker.repo@/@project.artifactId@
+  tag: @project.version@
+
+service:
+  type: NodePort
+  port: 9090
+  targetPort: 9090
+  nodePort: 30090
+
+externalAccess:
+  host: "localhost"
+  protocol: "http"
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 1Gi
+  requests:
+    cpu: 250m
+    memory: 512Mi
+
+spring:
+  profiles:
+    active: mysql
+  oauth2ResourceServer:
+    issuerUri: ""
+
+probes:
+  startup:
+    failureThreshold: 30
+    periodSeconds: 10
+  readiness:
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 6
+  liveness:
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 6
+
+mysql:
+  enabled: true
+
+  database: beerservice
+
+  port: 3306
+  targetPort: 3306
+  nodePort: 30306
+
+  user: user
+  password: dbpassword
+
+  rootPassword: dbpassword
+
+  serviceFQDN: "kbe-brewery-gateway-mysql.kbe-brewery-gateway.svc.cluster.local"
+
+jms:
+  enabled: true
+
+  broker:
+    port: 61616
+    nodePort: 30616
+  console:
+    port: 8161
+    nodePort: 30161
+
+  user: artemis
+  password: simetraehcapa
+
+  serviceFQDN: "kbe-brewery-gateway-jms.kbe-brewery-gateway.svc.cluster.local"
+
+beerService:
+  enabled: true
+  serviceFQDN: "kbe-brewery-gateway-beer-service.kbe-brewery-gateway.svc.cluster.local"
+  port: 8080
+inventoryService:
+  enabled: true
+  serviceFQDN: "kbe-brewery-gateway-inventory-service.kbe-brewery-gateway.svc.cluster.local"
+  port: 8082
+inventoryFailover:
+  enabled: true
+  serviceFQDN: "kbe-brewery-gateway-inventory-failover.kbe-brewery-gateway.svc.cluster.local"
+  port: 8083
+orderService:
+  enabled: true
+  serviceFQDN: "kbe-brewery-gateway-order-service.kbe-brewery-gateway.svc.cluster.local"
+  port: 8081
+ingress:
+  enabled: false
+
+# Section for overriding values in subcharts.
+
+# this is the alias for kbe-brewery-inventory-micro-service. override does not work with the name of the service
+inventory-service:
+  jms:
+    enabled: false
+    serviceFQDN: "kbe-brewery-gateway-jms.kbe-brewery-gateway.svc.cluster.local"
+  mysql:
+    enabled: false
+    serviceFQDN: "kbe-brewery-gateway-mysql.kbe-brewery-gateway.svc.cluster.local"
+  
+beer-service:
+  jms:
+    enabled: false
+    serviceFQDN: "kbe-brewery-gateway-jms.kbe-brewery-gateway.svc.cluster.local"
+  mysql:
+    enabled: false
+    serviceFQDN: "kbe-brewery-gateway-mysql.kbe-brewery-gateway.svc.cluster.local"
+  inventoryService:
+    enabled: false
+  inventoryFailover:
+    enabled: false
+  sfg:
+    inventory:
+      serviceFQDN: "kbe-brewery-gateway-inventory-service.kbe-brewery-gateway.svc.cluster.local"
+      port: 8082
+    failover:
+      serviceFQDN: "kbe-brewery-gateway-inventory-failover.kbe-brewery-gateway.svc.cluster.local"
+      port: 8083  
+      
+order-service:
+  jms:
+    enabled: false
+    serviceFQDN: "kbe-brewery-gateway-inventory-service.kbe-brewery-gateway.svc.cluster.local"
+  mysql:
+    enabled: false
+    serviceFQDN: "kbe-brewery-gateway-inventory-service.kbe-brewery-gateway.svc.cluster.local"
+  inventoryService:
+    enabled: false
+  inventoryFailover:
+    enabled: false
+  beerService:
+    enabled: false
+  sfg:
+    inventory:
+      serviceFQDN: "kbe-brewery-gateway-inventory-service.kbe-brewery-gateway.svc.cluster.local"
+      port: 8082
+    failover:
+      serviceFQDN: "kbe-brewery-gateway-inventory-failover.kbe-brewery-gateway.svc.cluster.local"
+      port: 8083    
+    beerService:
+      serviceFQDN: "kbe-brewery-gateway-beer-service.kbe-brewery-gateway.svc.cluster.local"
+      port: 8080  
+
+
+
