@@ -123,5 +123,5 @@ kubectl delete all --all -n kbe-brewery-gateway
 ```
 
 
-You can use the actuator rest call to verify via port 30081
+You can use the actuator rest call to verify via port 30090
 
