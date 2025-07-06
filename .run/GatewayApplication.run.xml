@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="SfgBreweryGatewayApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+  <configuration default="false" name="GatewayApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
     <module name="kbe-brewery-gateway" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="ch.dboeckli.springframeworkguru.kbe.sfgrestgateway.SfgBreweryGatewayApplication" />
     <method v="2">
