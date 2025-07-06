@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: beer-service
+  name: beer-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: beer-service
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: beer-service
+      annotations:
+        co.elastic.logs/enabled: "true"
+        co.elastic.logs.json-logging/json.keys_under_root: "true"
+        co.elastic.logs.json-logging/json.add_error_key: "true"
+        co.elastic.logs.json-logging/json.message_key: "message"
+    spec:
+      containers:
+      - image: springframeworkguru/kbe-brewery-beer-service
+        name: kbe-brewery-beer-service
+        resources: {}
+        env:
+          - name: SPRING_DATASOURCE_USER
+            value: root
+          - name: SPRING_DATASOURCE_PASSWORD
+            value: dbpassword
+          - name: SPRING_JPA_HIBERNATE_DDL-AUTO
+            value: update
+          - name: SPRING_DATASOURCE_URL
+            value: jdbc:mysql://mysql:3306/beerservice?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
+          - name: SPRING_ARTEMIS_HOST
+            value: jms
+          - name: SFG_BREWERY_BEER-INVENTORY-SERVICE-HOST
+            value: http://inventory-service:8082
+          - name: MANAGEMENT_ENDPOINT_HEALTH_PROBES_ENABLED
+            value: "true"
+          - name: MANAGEMENT_HEALTH_READINESSTATE_ENABLED
+            value: "true"
+          - name: MANAGEMENT_HEALTH_LIVENESSSTATE_ENABLED
+            value: "true"
+          - name: SERVER_SHUTDOWN
+            value: "graceful"
+        readinessProbe:
+          httpGet:
+            port: 8080
+            path: /actuator/health/readiness
+        livenessProbe:
+          httpGet:
+            port: 8080
+            path: /actuator/health/liveness
+        lifecycle:
+          preStop:
+            exec:
+              command: [ "sh", "-c", "sleep 10" ]
+status: {}
