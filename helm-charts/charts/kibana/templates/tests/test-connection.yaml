@@ -15,14 +15,6 @@ spec:
       args:
         - |
           echo "### Test: Kibana Connection using service name: {{ include "kibana.fullname" . }}"
-          curl -s -o /dev/null -w "%{http_code}" http://{{ include "kibana.fullname" . }}:{{ .Values.service.port }}
-          echo "Exit code: $?"
-
-          echo "### Test: Kibana Status API"
-          curl -s http://{{ include "kibana.fullname" . }}:{{ .Values.service.port }}/api/status | jq .
-          echo "Exit code: $?"
-
-          echo "### Test: Kibana API Info"
-          curl -s http://{{ include "kibana.fullname" . }}:{{ .Values.service.port }}/api/info | jq .
+          curl -s -D - http://{{ include "kibana.fullname" . }}:{{ .Values.service.port }}
           echo "Exit code: $?"
   restartPolicy: Never

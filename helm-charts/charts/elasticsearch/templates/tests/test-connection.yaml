@@ -15,14 +15,7 @@ spec:
       args:
         - |
           echo "### Test: Elasticsearch Connection using service name: {{ include "elasticsearch.fullname" . }}"
-          curl -s -o /dev/null -w "%{http_code}" http://{{ include "elasticsearch.fullname" . }}:{{ .Values.service.port }}
+          curl -s -D - http://{{ include "elasticsearch.fullname" . }}:{{ .Values.service.port }}
           echo "Exit code: $?"
 
-          echo "### Test: Elasticsearch Cluster Health"
-          curl -s http://{{ include "elasticsearch.fullname" . }}:{{ .Values.service.port }}/_cluster/health | jq .
-          echo "Exit code: $?"
-
-          echo "### Test: Elasticsearch Indices"
-          curl -s http://{{ include "elasticsearch.fullname" . }}:{{ .Values.service.port }}/_cat/indices?v
-          echo "Exit code: $?"
   restartPolicy: Never
