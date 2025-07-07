@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: {{ include "filebeat.fullname" . }}
+  namespace: {{ .Values.global.namespace }}
   labels:
     {{- include "filebeat.labels" . | nindent 4 }}
 spec:
@@ -18,6 +19,10 @@ spec:
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
       initContainers:
+        - name: wait-for-elasticsearch
+          image: busybox:1.37.0
+          command: [ 'sh', '-c', 'until nc -z {{ .Values.elasticsearch.serviceFQDN }} {{ .Values.elasticsearch.port }}; do echo "[busybox: wait-for-elasticsearch] waiting for elasticsearch"; sleep 2; done; echo "[busybox: wait-for-elasticsearch] elasticsearch is available"' ]
+
         - name: wait-for-kibana
           image: busybox:1.37.0
           command: [ 'sh', '-c', 'until nc -z {{ .Values.kibana.service.serviceFQDN }} {{ .Values.kibana.service.port }}; do echo "[busybox: wait-for-kibana] waiting for kibana"; sleep 2; done; echo "[busybox: wait-for-kibana] kibana is available"' ]

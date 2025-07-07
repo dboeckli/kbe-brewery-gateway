@@ -1,5 +1,12 @@
+global:
+  timezone: Europe/Zurich
+  timezonePath: /etc/localtime
+  namespace: kbe-brewery-gateway
+
 elasticsearch:
-  host: elasticsearch
+  serviceFQDN: "kbe-brewery-gateway-elasticsearch.kbe-brewery-gateway.svc.cluster.local"
+
+  host: "kbe-brewery-gateway-elasticsearch.kbe-brewery-gateway.svc.cluster.local"
   port: 9200
   username: elastic
   password: changeme

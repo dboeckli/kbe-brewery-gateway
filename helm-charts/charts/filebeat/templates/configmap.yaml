@@ -2,10 +2,13 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ include "filebeat.fullname" . }}-config
+  namespace: {{ .Values.global.namespace }}
   labels:
     {{- include "filebeat.labels" . | nindent 4 }}
 data:
   filebeat.yml: |-
+    logging.level: debug
+
     filebeat.autodiscover:
       providers:
         - type: kubernetes
@@ -15,12 +18,17 @@ data:
           hints.default_config:
             type: container
             paths:
-              - /var/log/containers/*${data.kubernetes.container.id}.log
-            processors:
-              - decode_json_fields:
-                  fields: ["message"]
-                  target: ""
-                  overwrite_keys: true
+              - /var/log/containers/*.log
+          templates:
+            - config:
+                - type: container
+                  paths:
+                    - /var/log/containers/*.log
+                  processors:
+                    - decode_json_fields:
+                        fields: ["message"]
+                        target: ""
+                        overwrite_keys: true
     processors:
       - add_cloud_metadata:
       - add_host_metadata:
