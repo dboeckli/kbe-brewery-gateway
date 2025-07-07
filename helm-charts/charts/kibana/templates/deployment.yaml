@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "kibana.fullname" . }}
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    {{- include "kibana.labels" . | nindent 4 }}
+    app.kubernetes.io/component: kibana
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "kibana.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: kibana
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        {{- include "kibana.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: kibana
+    spec:
+      initContainers:
+        - name: wait-for-elasticsearch
+          image: busybox:1.37.0
+          command: [ 'sh', '-c', 'until nc -z {{ .Values.elasticsearch.service.serviceFQDN }} {{ .Values.elasticsearch.service.port }}; do echo "[busybox: wait-for-elasticsearch] waiting for elasticsearch"; sleep 2; done; echo "[busybox: wait-for-elasticsearch] elasticsearch is available"' ]
+      containers:
+        - image: docker.elastic.co/kibana/kibana:7.17.28
+          name: kibana
+          imagePullPolicy: IfNotPresent
+          resources: {}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          env:
+            - name: ELASTICSEARCH_HOSTS
+              value: "http://{{ .Values.elasticsearch.service.serviceFQDN }}:{{ .Values.elasticsearch.service.port }}"
+            - name: SERVER_HOST
+              value: "0.0.0.0"
+          readinessProbe:
+            httpGet:
+              path: /api/status
+              port: http
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 6
+          livenessProbe:
+            httpGet:
+              path: /api/status
+              port: http
+            initialDelaySeconds: 120
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3

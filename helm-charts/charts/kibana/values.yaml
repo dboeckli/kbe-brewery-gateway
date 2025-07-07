@@ -1,0 +1,17 @@
+global:
+  namespace: kbe-brewery-gateway
+
+service:
+  type: NodePort
+
+  port: 5601
+  targetPort: 5601
+  nodePort: 30561
+
+elasticsearch:
+  service:
+    port: 9200
+    serviceFQDN: "kbe-brewery-gateway-elasticsearch.kbe-brewery-gateway.svc.cluster.local"
+
+ingress:
+  enabled: false

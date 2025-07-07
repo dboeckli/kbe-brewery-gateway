@@ -1,0 +1,13 @@
+global:
+  namespace: kbe-brewery-gateway
+
+service:
+  type: NodePort
+
+  port: 9200
+  targetPort: 9200
+  nodePort: 30920
+  transport: 9300
+
+ingress:
+  enabled: false

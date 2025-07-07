@@ -40,3 +40,13 @@ dependencies:
     repository: file://charts/jms
     condition: jms.enabled
 
+  - name: elasticsearch
+    version: @helm.chart.version@
+    repository: file://charts/elasticsearch
+    condition: elasticsearch.enabled
+
+  - name: kibana
+    version: @helm.chart.version@
+    repository: file://charts/kibana
+    condition: kibana.enabled
+
