@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "elasticsearch.fullname" . }}-test-connection"
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    {{- include "elasticsearch.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: test-elasticsearch-connection
+      image: curlimages/curl:7.87.0
+      command: [ '/bin/sh', '-c' ]
+      args:
+        - |
+          echo "### Test: Elasticsearch Connection using service name: {{ include "elasticsearch.fullname" . }}"
+          curl -s -o /dev/null -w "%{http_code}" http://{{ include "elasticsearch.fullname" . }}:{{ .Values.service.port }}
+          echo "Exit code: $?"
+
+          echo "### Test: Elasticsearch Cluster Health"
+          curl -s http://{{ include "elasticsearch.fullname" . }}:{{ .Values.service.port }}/_cluster/health | jq .
+          echo "Exit code: $?"
+
+          echo "### Test: Elasticsearch Indices"
+          curl -s http://{{ include "elasticsearch.fullname" . }}:{{ .Values.service.port }}/_cat/indices?v
+          echo "Exit code: $?"
+  restartPolicy: Never

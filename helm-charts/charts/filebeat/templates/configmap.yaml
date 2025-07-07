@@ -7,7 +7,7 @@ metadata:
     {{- include "filebeat.labels" . | nindent 4 }}
 data:
   filebeat.yml: |-
-    logging.level: debug
+    #logging.level: debug
 
     filebeat.autodiscover:
       providers:

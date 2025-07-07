@@ -24,7 +24,7 @@ components:
 - Config Server
 - Circuit Breaker (Resilience4j)
 - Distributed Tracing (Zipkin)
-- Message Broker (RabbitMQ)
+- Message Broker (ActiveMQ)
 - Database (MySQL)
 - Caching (Redis)
 - Monitoring (Prometheus & Grafana)
@@ -122,6 +122,27 @@ delete all
 kubectl delete all --all -n kbe-brewery-gateway
 ```
 
-
 You can use the actuator rest call to verify via port 30090
+
+## Consolidated Logging
+
+### elasticsearch
+
+will hold the log data
+curl: http://localhost:30920
+
+### kibana
+will enable search in the log database on elastic search.
+Web Gui: http://localhost:30561/app/home#/
+
+### filebeat
+retrieves the logs from all services.
+Some Manual Setup is needed:
+
+Go to the kibana Gui and:
+discover -> create index pattern: filebeat* -> next -> add @timestamp -> create index pattern
+
+![Create Index Pattern](k8s-manual/images/create%20index%20pattern.png)
+
+Go back to discover:
 
