@@ -50,3 +50,8 @@ dependencies:
     repository: file://charts/kibana
     condition: kibana.enabled
 
+  - name: filebeat
+    version: @helm.chart.version@
+    repository: file://charts/filebeat
+    condition: filebeat.enabled
+
