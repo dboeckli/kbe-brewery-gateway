@@ -1,0 +1,9 @@
+### get beers
+GET http://localhost:{{application-port}}/api/v1/beer
+Accept: application/json
+
+### get customers
+GET http://localhost:{{application-port}}/api/v1/customers/?
+    pageNumber={{$random.integer(100)}}&
+    pageSize={{$random.integer(100)}}
+

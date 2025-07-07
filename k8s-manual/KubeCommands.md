@@ -424,5 +424,8 @@ Open elastic search/kibana (get the randport from kibana with the ```kubectl get
 with browser open url: http://localhost:31312/app/home#/
 
 Initially go to discover -> create index pattern: filebeat* -> next -> add @timestamp -> create index pattern
+
+![Create Index Pattern](images/create%20index%20pattern.png)
+
 Go back to discover:
 

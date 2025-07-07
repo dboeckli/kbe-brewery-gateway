@@ -50,6 +50,7 @@ services:
     restart: on-failure
     depends_on:
       - kibana
+      - elasticsearch
   
   jms:
     container_name: jms
@@ -65,6 +66,20 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+  inventory-failover:
+    container_name: inventory-failover
+    image: domboeckli/kbe-brewery-inventory-failover:0.0.1-SNAPSHOT
+    ports:
+      - 8083:8083
+    depends_on:
+      mysql:
+        condition: service_healthy
+      jms:
+        condition: service_healthy
+    labels:
+      collect_logs_with_filebeat: "true"
+      decode_log_event_to_json_object: "true"
   
   inventory-service:
     container_name: inventory-service
@@ -72,8 +87,12 @@ services:
     ports:
       - 8082:8082
     depends_on:
-      - jms
-      - mysql
+      inventory-failover:
+        condition: service_started
+      mysql:
+        condition: service_healthy
+      jms:
+        condition: service_healthy
     environment:
       SPRING_DATASOURCE_HIKARI_JDBC_URL: jdbc:mysql://mysql:3306/beerservice?useUnicode=true&serverTimezone=UTC
       SPRING_DATASOURCE_HIKARI_USERNAME: root
@@ -89,21 +108,18 @@ services:
       collect_logs_with_filebeat: "true"
       decode_log_event_to_json_object: "true"
   
-  inventory-failover:
-    container_name: inventory-failover
-    image: domboeckli/kbe-brewery-inventory-failover:0.0.1-SNAPSHOT
-    ports:
-      - 8083:8083
-  
   beer-service:
     container_name: beer-service
     image: domboeckli/kbe-brewery-beer-micro-service:0.0.14-SNAPSHOT
     ports:
       - 8080:8080
     depends_on:
-      - inventory-service
-      - jms
-      - mysql
+      inventory-service:
+        condition: service_started
+      mysql:
+        condition: service_healthy
+      jms:
+        condition: service_healthy
     restart: on-failure
     environment:
       SPRING_DATASOURCE_HIKARI_JDBC_URL: jdbc:mysql://mysql:3306/beerservice?useUnicode=true&serverTimezone=UTC
@@ -127,9 +143,12 @@ services:
     ports:
       - 8081:8081
     depends_on:
-      - beer-service
-      - jms
-      - mysql
+      beer-service:
+        condition: service_started
+      mysql:
+        condition: service_healthy
+      jms:
+        condition: service_healthy
     restart: on-failure
     environment:
       SPRING_DATASOURCE_HIKARI_JDBC_URL: jdbc:mysql://mysql:3306/beerservice?useUnicode=true&serverTimezone=UTC

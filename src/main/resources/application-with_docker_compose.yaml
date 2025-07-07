@@ -13,19 +13,21 @@ spring:
         in-tests: false
   cloud:
     gateway:
-      routes:
-        - id: beer-service
-          uri: http://host.docker.internal:8080
-          predicates:
-            - Path=/api/v1/beer/*,/api/v1/beerUpc/*
-        - id: inventory-service
-          uri: http://host.docker.internal:8082
-          predicates:
-            - Path=/api/v1/beer/*/inventory
-        - id: order-service
-          uri: http://host.docker.internal:8081
-          predicates:
-            - Path=/api/v1/customers/** 
+      server:
+        webflux:
+          routes:
+            - id: beer-service
+              uri: http://host.docker.internal:8080
+              predicates:
+                - Path=/api/v1/beer/*,/api/v1/beerUpc/*
+            - id: inventory-service
+              uri: http://host.docker.internal:8082
+              predicates:
+                - Path=/api/v1/beer/*/inventory
+            - id: order-service
+              uri: http://host.docker.internal:8081
+              predicates:
+                - Path=/api/v1/customers/** 
 
 management:
   health:
@@ -34,10 +36,17 @@ management:
     livenessstate:
       enabled: true
   endpoints:
+    access:
+      default: unrestricted
     web:
       exposure:
         include: "*"
   endpoint:
+    configprops:
+      # WARNING: SECURITY RISK - DO NOT USE IN PRODUCTION ENVIRONMENT
+      # This configuration exposes sensitive data and should only be used for development or testing purposes.
+      # Ensure this is disabled in any environment where security is a concern.
+      show-values: ALWAYS
     health:
       probes:
         enabled: true
@@ -61,4 +70,9 @@ logbook:
       - password
   predicate:
     exclude:
-      - path: /actuator/health
+      # Exclude HTML-related calls and specific endpoints that Logbook doesn't handle correctly
+      - path: /actuator/health/**
+      - path: /h2-console/**  # Exclude H2 console
+      - path: /swagger-ui/**  # Exclude Swagger UI if used
+      - path: /v3/api-docs/** # Exclude OpenAPI docs if used
+        # Add more exclusions as needed
