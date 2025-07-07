@@ -50,6 +50,7 @@ services:
     restart: on-failure
     depends_on:
       - kibana
+      - elasticsearch
   
   jms:
     container_name: jms
@@ -76,6 +77,9 @@ services:
         condition: service_healthy
       jms:
         condition: service_healthy
+    labels:
+      collect_logs_with_filebeat: "true"
+      decode_log_event_to_json_object: "true"
   
   inventory-service:
     container_name: inventory-service

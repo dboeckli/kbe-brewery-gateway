@@ -13,6 +13,10 @@ spring:
     gateway:
       server:
         webflux:
+          httpserver:
+            wiretap: false
+          httpclient:
+            wiretap: false
           routes:
             - id: beer-service
               uri: http://localhost:8080

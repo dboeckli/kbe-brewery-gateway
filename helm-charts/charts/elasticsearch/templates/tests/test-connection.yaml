@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "elasticsearch.fullname" . }}-test-connection"
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    {{- include "elasticsearch.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: test-elasticsearch-connection
+      image: curlimages/curl:7.87.0
+      command: [ '/bin/sh', '-c' ]
+      args:
+        - |
+          echo "### Test: Elasticsearch Connection using service name: {{ include "elasticsearch.fullname" . }}"
+          curl -s -D - http://{{ include "elasticsearch.fullname" . }}:{{ .Values.service.port }}
+          echo "Exit code: $?"
+
+  restartPolicy: Never

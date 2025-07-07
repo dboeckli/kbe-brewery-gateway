@@ -1,0 +1,6 @@
+apiVersion: v2
+name: filebeat
+description: A Helm subchart for filebeat
+type: application
+version: @helm.chart.version@
+appVersion: "7.12"

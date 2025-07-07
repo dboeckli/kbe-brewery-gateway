@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "kibana.fullname" . }}-test-connection"
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    {{- include "kibana.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: test-kibana-connection
+      image: curlimages/curl:7.87.0
+      command: [ '/bin/sh', '-c' ]
+      args:
+        - |
+          echo "### Test: Kibana Connection using service name: {{ include "kibana.fullname" . }}"
+          curl -s -D - http://{{ include "kibana.fullname" . }}:{{ .Values.service.port }}
+          echo "Exit code: $?"
+  restartPolicy: Never
