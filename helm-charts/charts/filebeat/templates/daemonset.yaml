@@ -28,7 +28,7 @@ spec:
           command: [ 'sh', '-c', 'until nc -z {{ .Values.kibana.service.serviceFQDN }} {{ .Values.kibana.service.port }}; do echo "[busybox: wait-for-kibana] waiting for kibana"; sleep 2; done; echo "[busybox: wait-for-kibana] kibana is available"' ]
       containers:
         - name: filebeat
-          image: docker.elastic.co/beats/filebeat:7.17.28
+          image: docker.elastic.co/beats/filebeat:7.17.29
           imagePullPolicy: IfNotPresent
           args: [
             "-c", "/etc/filebeat.yml",
