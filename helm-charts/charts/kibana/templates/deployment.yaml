@@ -24,7 +24,7 @@ spec:
           image: busybox:1.37.0
           command: [ 'sh', '-c', 'until nc -z {{ .Values.elasticsearch.service.serviceFQDN }} {{ .Values.elasticsearch.service.port }}; do echo "[busybox: wait-for-elasticsearch] waiting for elasticsearch"; sleep 2; done; echo "[busybox: wait-for-elasticsearch] elasticsearch is available"' ]
       containers:
-        - image: docker.elastic.co/kibana/kibana:7.17.28
+        - image: docker.elastic.co/kibana/kibana:7.17.29
           name: kibana
           imagePullPolicy: IfNotPresent
           resources: {}
