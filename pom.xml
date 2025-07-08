@@ -38,10 +38,6 @@
         <spring-cloud.version>2025.0.0</spring-cloud.version>
 
         <github.acions.build>false</github.acions.build>
-        <skip.docker.publish>true</skip.docker.publish>
-        <skip.start.stop.springboot>false</skip.start.stop.springboot>
-
-        <github.acions.build>false</github.acions.build>
         <skip.docker.build>false</skip.docker.build>
         <skip.docker.publish>true</skip.docker.publish>
         <skip.start.stop.springboot>false</skip.start.stop.springboot>
