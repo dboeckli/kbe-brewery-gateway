@@ -11,3 +11,13 @@ service:
 
 ingress:
   enabled: false
+
+elasticsearchImage:
+  repository: docker.elastic.co/elasticsearch/elasticsearch
+  tag: "7.17.29"
+  pullPolicy: IfNotPresent
+
+curlimagesImage:
+  repository: curlimages/curl
+  tag: "7.87.0"
+  pullPolicy: IfNotPresent

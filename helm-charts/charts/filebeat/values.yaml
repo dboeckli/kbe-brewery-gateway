@@ -37,3 +37,13 @@ serviceAccount:
 nodeSelector: {}
 tolerations: []
 affinity: {}
+
+busyboxImage:
+  repository: busybox
+  tag: "1.37.0"
+  pullPolicy: IfNotPresent
+
+filebeatImage:
+  repository: docker.elastic.co/beats/filebeat
+  tag: "7.17.29"
+  pullPolicy: IfNotPresent

@@ -1,5 +1,5 @@
 apiVersion: v2
-name: mysql
+name: kbe-brewery-gateway-mysql
 description: A Helm subchart for Mysql used in Spring 6 Reactive MongoDB application
 type: application
 # Disable Sonar warning for invalid semver: This value is set by Maven filtering

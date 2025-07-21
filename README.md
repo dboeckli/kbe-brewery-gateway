@@ -122,6 +122,16 @@ delete all
 kubectl delete all --all -n kbe-brewery-gateway
 ```
 
+delete all
+```powershell
+kubectl delete all --all -n kbe-brewery-order-micro-service
+```
+
+create busybox sidecar
+```powershell
+kubectl run busybox-test --rm -it --image=busybox:1.36 --namespace=kbe-brewery-order-micro-service --command -- sh
+```
+
 You can use the actuator rest call to verify via port 30090
 
 ## Consolidated Logging
