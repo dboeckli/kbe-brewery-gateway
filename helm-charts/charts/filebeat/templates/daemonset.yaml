@@ -20,16 +20,18 @@ spec:
       dnsPolicy: ClusterFirstWithHostNet
       initContainers:
         - name: wait-for-elasticsearch
-          image: busybox:1.37.0
+          image: {{.Values.busyboxImage.repository }}:{{.Values.busyboxImage.tag }}
+          imagePullPolicy: {{.Values.busyboxImage.pullPolicy }}
           command: [ 'sh', '-c', 'until nc -z {{ .Values.elasticsearch.serviceFQDN }} {{ .Values.elasticsearch.port }}; do echo "[busybox: wait-for-elasticsearch] waiting for elasticsearch"; sleep 2; done; echo "[busybox: wait-for-elasticsearch] elasticsearch is available"' ]
 
         - name: wait-for-kibana
-          image: busybox:1.37.0
+          image: {{.Values.busyboxImage.repository }}:{{.Values.busyboxImage.tag }}
+          imagePullPolicy: {{.Values.busyboxImage.pullPolicy }}
           command: [ 'sh', '-c', 'until nc -z {{ .Values.kibana.service.serviceFQDN }} {{ .Values.kibana.service.port }}; do echo "[busybox: wait-for-kibana] waiting for kibana"; sleep 2; done; echo "[busybox: wait-for-kibana] kibana is available"' ]
       containers:
         - name: filebeat
-          image: docker.elastic.co/beats/filebeat:7.17.29
-          imagePullPolicy: IfNotPresent
+          image: {{.Values.filebeatImage.repository }}:{{.Values.filebeatImage.tag }}
+          imagePullPolicy: {{.Values.filebeatImage.pullPolicy }}
           args: [
             "-c", "/etc/filebeat.yml",
             "-e",
