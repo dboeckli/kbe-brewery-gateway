@@ -1,3 +1,5 @@
+# Those values are set by Maven filtering
+# and will be replaced with a valid version number during the build process.
 apiVersion: v2
 name: @project.artifactId@
 description: A Helm chart for Spring 6 Project
@@ -6,51 +8,32 @@ version: @helm.chart.version@
 appVersion: @project.version@
 
 dependencies:
-  - name: kbe-brewery-beer-micro-service
-    version: "v0.0.14-SNAPSHOT"
-    repository: "oci://registry-1.docker.io/domboeckli"
-    alias: beer-service
-    condition: beerService.enabled
-
-  - name: kbe-brewery-inventory-micro-service
-    version: "v0.0.13-SNAPSHOT"
-    repository: "oci://registry-1.docker.io/domboeckli"
-    alias: inventory-service
-    condition: inventoryService.enabled
-
-  - name: kbe-brewery-inventory-failover
-    version: "v0.0.1-SNAPSHOT"
-    repository: "oci://registry-1.docker.io/domboeckli"
-    alias: inventory-failover
-    condition: inventoryFailover.enabled
-    
-  - name: kbe-brewery-order-micro-service
-    version: "v0.0.13-SNAPSHOT"
-    repository: "oci://registry-1.docker.io/domboeckli"
-    alias: order-service
-    condition: orderService.enabled  
-
-  - name: mysql
+  - name: kbe-brewery-gateway-mysql
+    alias: mysql
     version: @helm.chart.version@
     repository: file://charts/mysql
     condition: mysql.enabled
     
-  - name: jms
+  - name: kbe-brewery-gateway-jms
+    alias: jms
     version: @helm.chart.version@
     repository: file://charts/jms
     condition: jms.enabled
 
-  - name: elasticsearch
+  - name: kbe-brewery-gateway-elasticsearch
+    alias: elasticsearch
     version: @helm.chart.version@
     repository: file://charts/elasticsearch
     condition: elasticsearch.enabled
 
-  - name: kibana
+  - name: kbe-brewery-gateway-kibana
+    alias: kibana
     version: @helm.chart.version@
     repository: file://charts/kibana
     condition: kibana.enabled
 
-  - name: filebeat
+  - name: kbe-brewery-gateway-filebeat
+    alias: filebeat
     version: @helm.chart.version@
     repository: file://charts/filebeat
     condition: filebeat.enabled

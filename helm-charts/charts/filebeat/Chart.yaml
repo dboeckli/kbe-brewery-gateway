@@ -1,5 +1,5 @@
 apiVersion: v2
-name: filebeat
+name: kbe-brewery-gateway-filebeat
 description: A Helm subchart for filebeat
 type: application
 version: @helm.chart.version@

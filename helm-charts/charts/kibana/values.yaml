@@ -15,3 +15,18 @@ elasticsearch:
 
 ingress:
   enabled: false
+
+kibanaImage:
+  repository: docker.elastic.co/kibana/kibana
+  tag: "7.17.29"
+  pullPolicy: IfNotPresent
+
+curlimagesImage:
+  repository: curlimages/curl
+  tag: "7.87.0"
+  pullPolicy: IfNotPresent
+
+busyboxImage:
+  repository: busybox
+  tag: "1.37.0"
+  pullPolicy: IfNotPresent

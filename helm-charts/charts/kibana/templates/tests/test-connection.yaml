@@ -10,7 +10,8 @@ metadata:
 spec:
   containers:
     - name: test-kibana-connection
-      image: curlimages/curl:7.87.0
+      image: {{.Values.curlimagesImage.repository }}:{{.Values.curlimagesImage.tag }}
+      imagePullPolicy: {{.Values.curlimagesImage.pullPolicy }}
       command: [ '/bin/sh', '-c' ]
       args:
         - |

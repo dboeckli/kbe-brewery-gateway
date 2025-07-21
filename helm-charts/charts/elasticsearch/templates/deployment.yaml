@@ -20,9 +20,9 @@ spec:
         app.kubernetes.io/component: elasticsearch
     spec:
       containers:
-        - image: docker.elastic.co/elasticsearch/elasticsearch:7.17.29
-          name: elasticsearch
-          imagePullPolicy: IfNotPresent
+        - name: elasticsearch
+          image: {{.Values.elasticsearchImage.repository }}:{{.Values.elasticsearchImage.tag }}
+          imagePullPolicy: {{.Values.elasticsearchImage.pullPolicy }}
           resources: {}
           env:
             - name: discovery.type
