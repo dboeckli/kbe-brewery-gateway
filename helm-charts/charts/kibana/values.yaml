@@ -23,7 +23,7 @@ kibanaImage:
 
 curlimagesImage:
   repository: curlimages/curl
-  tag: "7.87.0"
+  tag: "7.88.1"
   pullPolicy: IfNotPresent
 
 busyboxImage:
