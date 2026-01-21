@@ -4,3 +4,6 @@ $file = Get-ChildItem -Filter kbe-brewery-gateway-v*.tgz | Select-Object -First 
 $APPLICATION_NAME = Get-ChildItem -Directory | Where-Object { $_.LastWriteTime -ge $file.LastWriteTime } | Select-Object -ExpandProperty Name
 
 helm uninstall $APPLICATION_NAME --namespace kbe-brewery-gateway
+
+kubectl delete pod -n kbe-brewery-gateway --field-selector=status.phase==Succeeded
+kubectl delete pod -n kbe-brewery-gateway --field-selector=status.phase==Failed

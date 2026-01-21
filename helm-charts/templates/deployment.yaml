@@ -16,30 +16,76 @@ spec:
         {{- include "application-template.selectorLabels" . | nindent 8 }}
     spec:
       initContainers:
+        - name: wait-for-elasticsearch
+          image: {{.Values.busyboxImage.repository }}:{{.Values.busyboxImage.tag }}
+          imagePullPolicy: {{.Values.busyboxImage.pullPolicy }}
+          command: [ 'sh', '-c', 'until nc -z {{ .Values.elasticsearch.serviceFQDN  }} {{ .Values.elasticsearch.port }}; do echo "[busybox: wait-for-mysql] waiting for mysql"; sleep 2; done; echo "[busybox: wait-for-mysql] mysql is available"' ]
+
         - name: wait-for-mysql
           image: {{.Values.busyboxImage.repository }}:{{.Values.busyboxImage.tag }}
           imagePullPolicy: {{.Values.busyboxImage.pullPolicy }}
           command: [ 'sh', '-c', 'until nc -z {{ .Values.mysql.serviceFQDN  }} {{ .Values.mysql.port }}; do echo "[busybox: wait-for-mysql] waiting for mysql"; sleep 2; done; echo "[busybox: wait-for-mysql] mysql is available"' ]
+
         - name: wait-for-jms
           image: {{.Values.busyboxImage.repository }}:{{.Values.busyboxImage.tag }}
           imagePullPolicy: {{.Values.busyboxImage.pullPolicy }}
           command: [ 'sh', '-c', 'until nc -z {{ .Values.jms.serviceFQDN  }} {{ .Values.jms.broker.port }}; do echo "[busybox: wait-for-jms] waiting for jms"; sleep 2; done; echo "[busybox: wait-for-jms] jms is available"' ]
+
         - name: wait-for-inventory-service
           image: {{.Values.busyboxImage.repository }}:{{.Values.busyboxImage.tag }}
           imagePullPolicy: {{.Values.busyboxImage.pullPolicy }}
-          command: [ 'sh', '-c', 'until nc -z {{ .Values.inventoryService.serviceFQDN  }} {{ .Values.inventoryService.port }}; do echo "[busybox: wait-for-inventory-service] waiting for inventory service"; sleep 2; done; echo "[busybox: wait-for-inventory-service] inventory service is available"' ]
+          command:
+            - /scripts/wait-for-readiness.sh
+          args:
+            - inventoryService
+            - {{ .Values.inventoryService.serviceFQDN | quote }}
+            - {{ .Values.inventoryService.port | quote }}
+          volumeMounts:
+            - name: scripts
+              mountPath: /scripts
+              readOnly: true
+
         - name: wait-for-failover-service
           image: {{.Values.busyboxImage.repository }}:{{.Values.busyboxImage.tag }}
           imagePullPolicy: {{.Values.busyboxImage.pullPolicy }}
-          command: [ 'sh', '-c', 'until nc -z {{ .Values.inventoryFailover.serviceFQDN  }} {{ .Values.inventoryFailover.port }}; do echo "[busybox: wait-for-failover-service] waiting for failover service"; sleep 2; done; echo "[busybox: wait-for-failover-service] failover service is available"' ]
+          command:
+            - /scripts/wait-for-readiness.sh
+          args:
+            - inventoryFailover
+            - {{ .Values.inventoryFailover.serviceFQDN | quote }}
+            - {{ .Values.inventoryFailover.port | quote }}
+          volumeMounts:
+            - name: scripts
+              mountPath: /scripts
+              readOnly: true
+
         - name: wait-for-beer-service
           image: {{.Values.busyboxImage.repository }}:{{.Values.busyboxImage.tag }}
           imagePullPolicy: {{.Values.busyboxImage.pullPolicy }}
-          command: [ 'sh', '-c', 'until nc -z {{ .Values.beerService.serviceFQDN  }} {{ .Values.beerService.port }}; do echo "[busybox: wait-for-beer-service] waiting for beer service"; sleep 2; done; echo "[busybox: wait-for-beer-service] beer service is available"' ]
+          command:
+            - /scripts/wait-for-readiness.sh
+          args:
+            - beerService
+            - {{ .Values.beerService.serviceFQDN | quote }}
+            - {{ .Values.beerService.port | quote }}
+          volumeMounts:
+            - name: scripts
+              mountPath: /scripts
+              readOnly: true
+
         - name: wait-for-order-service
           image: {{.Values.busyboxImage.repository }}:{{.Values.busyboxImage.tag }}
           imagePullPolicy: {{.Values.busyboxImage.pullPolicy }}
-          command: [ 'sh', '-c', 'until nc -z {{ .Values.orderService.serviceFQDN  }} {{ .Values.orderService.port }}; do echo "[busybox: wait-for-order-service] waiting for order service"; sleep 2; done; echo "[busybox: wait-for-order-service] order service is available"' ]
+          command:
+            - /scripts/wait-for-readiness.sh
+          args:
+            - orderService
+            - {{ .Values.orderService.serviceFQDN | quote }}
+            - {{ .Values.orderService.port | quote }}
+          volumeMounts:
+            - name: scripts
+              mountPath: /scripts
+              readOnly: true
 
       containers:
         - name: {{ .Chart.Name }}
@@ -112,3 +158,7 @@ spec:
           hostPath:
             path: {{ .Values.global.timezonePath }}
             type: ""
+        - name: scripts
+          configMap:
+            name: {{ include "application-template.fullname" . }}-scripts
+            defaultMode: 0555

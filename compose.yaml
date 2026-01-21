@@ -17,24 +17,32 @@ services:
   
   elasticsearch:
     container_name: elasticsearch
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.29
+    image: docker.elastic.co/elasticsearch/elasticsearch:9.2.4
     ports:
       - 9200:9200
     environment:
-      discovery.type: single-node
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - xpack.security.http.ssl.enabled=false
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -s http://localhost:9200 >/dev/null || exit 1" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
   
   kibana:
     container_name: kibana
-    image: docker.elastic.co/kibana/kibana:7.17.29
+    image: docker.elastic.co/kibana/kibana:9.2.4
     ports:
       - 5601:5601
     restart: on-failure
     depends_on:
-      - elasticsearch
+      elasticsearch:
+        condition: service_healthy
   
   filebeat:
     container_name: filebeat
-    image: docker.elastic.co/beats/filebeat:7.17.29
+    image: docker.elastic.co/beats/filebeat:9.2.4
     volumes:
       - ./filebeat/filebeat.docker.yml:/usr/share/filebeat/filebeat.yml # Remove :ro
       #- ./filebeat/filebeat.docker.yml:/usr/share/filebeat/filebeat.yml:ro # Configuration file
@@ -49,8 +57,10 @@ services:
     user: root                                                             # Allow access to log files and docker.sock
     restart: on-failure
     depends_on:
-      - kibana
-      - elasticsearch
+      kibana:
+        condition: service_started
+      elasticsearch:
+        condition: service_healthy
   
   jms:
     container_name: jms
@@ -193,7 +203,7 @@ services:
             " ]
       interval: 10s
       timeout: 5s
-      retries: 5
+      retries: 15
     command: >
       /bin/sh -c '
       while true; do
