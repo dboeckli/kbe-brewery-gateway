@@ -9,7 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class SfgBreweryGatewayApplication {
 
     public static void main(String[] args) {
-        log.info("Starting Spring 6 Template Application...");
+        log.info("Starting SfgBreweryGatewayApplication...");
         SpringApplication.run(SfgBreweryGatewayApplication.class, args);
     }
 

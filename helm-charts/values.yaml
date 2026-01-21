@@ -80,6 +80,11 @@ jms:
 
   serviceFQDN: "kbe-brewery-gateway-jms.kbe-brewery-gateway.svc.cluster.local"
 
+elasticsearch:
+  enabled: true
+  serviceFQDN: "kbe-brewery-gateway-elasticsearch.kbe-brewery-gateway.svc.cluster.local"
+  port: 9200
+
 beerService:
   enabled: true
   serviceFQDN: "kbe-brewery-gateway-beer-service.kbe-brewery-gateway.svc.cluster.local"
