@@ -18,7 +18,7 @@ ingress:
 
 kibanaImage:
   repository: docker.elastic.co/kibana/kibana
-  tag: "9.3.1"
+  tag: "9.3.2"
   pullPolicy: IfNotPresent
 
 curlimagesImage:
