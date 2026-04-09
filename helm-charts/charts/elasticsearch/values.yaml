@@ -14,7 +14,7 @@ ingress:
 
 elasticsearchImage:
   repository: docker.elastic.co/elasticsearch/elasticsearch
-  tag: "9.3.2"
+  tag: "9.3.3"
   pullPolicy: IfNotPresent
 
 curlimagesImage:
