@@ -18,7 +18,7 @@ for simplicity we use the images create by springframeworkguru, so the prefix is
 - beer-service
 - order-service
 - inventory-failover
-components:
+  components:
 - API Gateway
 - Service Discovery (Eureka)
 - Config Server
@@ -30,32 +30,38 @@ components:
 - Monitoring (Prometheus & Grafana)
 
 ## Commands
+
 - Start everything
-```bash 
+
+```bash
 docker compose -f docker-manual/compose-local.yaml up -d
 ```
 
 - Stop all
-```bash 
+
+```bash
 docker compose -f docker-manual/compose-local.yaml stop
 ```
 
 - Stop and Remove all
-```bash 
+
+```bash
 docker compose -f docker-manual/compose-local.yaml down
 ```
 
 - Check what is running
-```bash 
+
+```bash
 docker ps
 ```
 
 - Rebuild filebeat
 
 Remark: is using the directory under filebeat. there is a Dockerfile and yml file for configuration.
-```bash 
- docker-compose -f docker-manual/compose-local.yaml build filebeat
-```  
+
+```bash
+docker-compose -f docker-manual/compose-local.yaml build filebeat
+```
 
 After installation you can access the kibana web gui and check the log. first you need a little configuration described below
 
@@ -77,57 +83,69 @@ appropriate projects, templating with helm and deployment into a kubernetes envi
 Be aware that we are using a different namespace here (not default).
 
 To run maven filtering for destination target/helm
+
 ```bash
 mvn clean install -DskipTests 
 ```
 
 Go to the directory where the tgz file has been created after 'mvn install'
+
 ```powershell
 cd target/helm/repo
 ```
 
 unpack
+
 ```powershell
 $file = Get-ChildItem -Filter kbe-brewery-gateway-v*.tgz | Select-Object -First 1
 tar -xvf $file.Name
 ```
 
 install
+
 ```powershell
 $APPLICATION_NAME = Get-ChildItem -Directory | Where-Object { $_.LastWriteTime -ge $file.LastWriteTime } | Select-Object -ExpandProperty Name
 helm upgrade --install $APPLICATION_NAME ./$APPLICATION_NAME --namespace kbe-brewery-gateway --create-namespace --wait --timeout 8m --debug --render-subchart-notes
 ```
 
 show logs
+
 ```powershell
 kubectl get pods -l app.kubernetes.io/name=$APPLICATION_NAME -n kbe-brewery-gateway
 ```
+
 replace $POD with pods from the command above
+
 ```powershell
 kubectl logs $POD -n kbe-brewery-gateway --all-containers
 ```
 
 test
+
 ```powershell
 helm test $APPLICATION_NAME --namespace kbe-brewery-gateway --logs
 ```
 
 uninstall
+
 ```powershell
 helm uninstall $APPLICATION_NAME --namespace kbe-brewery-gateway
 ```
 
 delete all
+
 ```powershell
 kubectl delete all --all -n kbe-brewery-gateway
 ```
 
 delete all
+
 ```powershell
 kubectl delete all --all -n kbe-brewery-order-micro-service
 ```
 
 create busybox sidecar
+
 ```powershell
 kubectl run busybox-test --rm -it --image=busybox:1.36 --namespace=kbe-brewery-order-micro-service --command -- sh
 ```
@@ -142,10 +160,12 @@ will hold the log data
 curl: http://localhost:30920
 
 ### kibana
+
 will enable search in the log database on elastic search.
 Web Gui: http://localhost:30561/app/home#/
 
 ### filebeat
+
 retrieves the logs from all services.
 Some Manual Setup is needed:
 
