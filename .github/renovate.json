@@ -122,6 +122,10 @@
         "master"
     ],
     "branchPrefix": "feature/renovate-",
+    "ignorePaths": [
+        "k8s-manual/**",
+        "docker-manual/**"
+    ],
     "separateMinorPatch": true,
     "separateMajorMinor": true,
     "automerge": false,
