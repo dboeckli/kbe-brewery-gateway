@@ -18,12 +18,12 @@ ingress:
 
 kibanaImage:
   repository: docker.elastic.co/kibana/kibana
-  tag: "9.3.3"
+  tag: "9.3.4"
   pullPolicy: IfNotPresent
 
 curlimagesImage:
   repository: curlimages/curl
-  tag: "8.19.0"
+  tag: "8.20.0"
   pullPolicy: IfNotPresent
 
 busyboxImage:
