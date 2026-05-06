@@ -42,7 +42,7 @@ services:
   
   filebeat:
     container_name: filebeat
-    image: docker.elastic.co/beats/filebeat:9.3.4
+    image: docker.elastic.co/beats/filebeat:9.4.0
     volumes:
       - ./filebeat/filebeat.docker.yml:/usr/share/filebeat/filebeat.yml # Remove :ro
       #- ./filebeat/filebeat.docker.yml:/usr/share/filebeat/filebeat.yml:ro # Configuration file
