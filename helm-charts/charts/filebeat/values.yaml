@@ -45,5 +45,5 @@ busyboxImage:
 
 filebeatImage:
   repository: docker.elastic.co/beats/filebeat
-  tag: "9.4.4"
+  tag: "9.5.0"
   pullPolicy: IfNotPresent
