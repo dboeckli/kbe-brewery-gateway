@@ -17,7 +17,7 @@ services:
   
   elasticsearch:
     container_name: elasticsearch
-    image: docker.elastic.co/elasticsearch/elasticsearch:9.4.4
+    image: docker.elastic.co/elasticsearch/elasticsearch:9.5.0
     ports:
       - 9200:9200
     environment:
@@ -32,7 +32,7 @@ services:
   
   kibana:
     container_name: kibana
-    image: docker.elastic.co/kibana/kibana:9.4.4
+    image: docker.elastic.co/kibana/kibana:9.5.0
     ports:
       - 5601:5601
     restart: on-failure
@@ -42,7 +42,7 @@ services:
   
   filebeat:
     container_name: filebeat
-    image: docker.elastic.co/beats/filebeat:9.4.4
+    image: docker.elastic.co/beats/filebeat:9.5.0
     volumes:
       - ./filebeat/filebeat.docker.yml:/usr/share/filebeat/filebeat.yml # Remove :ro
       #- ./filebeat/filebeat.docker.yml:/usr/share/filebeat/filebeat.yml:ro # Configuration file
