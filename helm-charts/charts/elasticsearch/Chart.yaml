@@ -1,5 +1,5 @@
 apiVersion: v2
-name: kbe-brewery-gateway-elasticsearch
+name: kbe-brewery-gateway-elasticsearch-chart
 description: A Helm subchart for elastic search
 type: application
 version: @helm.chart.version@

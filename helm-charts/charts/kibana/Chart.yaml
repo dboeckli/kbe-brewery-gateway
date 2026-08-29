@@ -1,5 +1,5 @@
 apiVersion: v2
-name: kbe-brewery-gateway-kibana
+name: kbe-brewery-gateway-kibana-chart
 description: A Helm subchart for kibana
 type: application
 version: @helm.chart.version@

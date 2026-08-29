@@ -1,3 +1,6 @@
+nameOverride: "kbe-brewery-gateway"
+fullnameOverride: "kbe-brewery-gateway"
+
 global:
   timezone: Europe/Zurich
   timezonePath: /etc/localtime
@@ -52,6 +55,8 @@ probes:
 mysql:
   enabled: true
 
+  fullnameOverride: "kbe-brewery-gateway-mysql"
+
   database: beerservice
 
   port: 3306
@@ -68,6 +73,8 @@ mysql:
 jms:
   enabled: true
 
+  fullnameOverride: "kbe-brewery-gateway-jms"
+
   broker:
     port: 61616
     nodePort: 30616
@@ -82,8 +89,19 @@ jms:
 
 elasticsearch:
   enabled: true
+  fullnameOverride: "kbe-brewery-gateway-elasticsearch"
   serviceFQDN: "kbe-brewery-gateway-elasticsearch.kbe-brewery-gateway.svc.cluster.local"
   port: 9200
+
+kibana:
+  enabled: true
+  fullnameOverride: "kbe-brewery-gateway-kibana"
+  serviceFQDN: "kbe-brewery-gateway-kibana.kbe-brewery-gateway.svc.cluster.local"
+
+filebeat:
+  enabled: true
+  fullnameOverride: "kbe-brewery-gateway-filebeat"
+  serviceFQDN: "kbe-brewery-gateway-filebeat.kbe-brewery-gateway.svc.cluster.local"
 
 beerService:
   enabled: true
