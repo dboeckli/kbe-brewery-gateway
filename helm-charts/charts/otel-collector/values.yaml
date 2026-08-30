@@ -21,4 +21,9 @@ otelCollectorImage:
   tag: "0.159.0"
   pullPolicy: IfNotPresent
 
+curlimagesImage:
+  repository: curlimages/curl
+  tag: "8.21.0"
+  pullPolicy: IfNotPresent
+
 resources: {}

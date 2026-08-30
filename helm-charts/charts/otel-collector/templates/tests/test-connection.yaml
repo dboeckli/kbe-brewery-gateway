@@ -10,13 +10,13 @@ metadata:
 spec:
   containers:
     - name: test-otel-collector
-      image: {{.Values.otelCollectorImage.repository }}:{{.Values.otelCollectorImage.tag }}
-      imagePullPolicy: {{.Values.otelCollectorImage.pullPolicy }}
+      image: {{.Values.curlimagesImage.repository }}:{{.Values.curlimagesImage.tag }}
+      imagePullPolicy: {{.Values.curlimagesImage.pullPolicy }}
       command: [ '/bin/sh', '-c' ]
       args:
         - |
           echo "### Test: OTel Collector Connection using service name: {{ include "otel-collector.fullname" . }}"
-          wget -qO- http://{{ include "otel-collector.fullname" . }}:{{ .Values.service.healthPort }}/ || exit 1
+          curl -sf http://{{ include "otel-collector.fullname" . }}:{{ .Values.service.healthPort }}/ || exit 1
           echo "Exit code: $?"
 
   restartPolicy: Never

@@ -21,4 +21,9 @@ apmServerImage:
   tag: "9.5.2"
   pullPolicy: IfNotPresent
 
+curlimagesImage:
+  repository: curlimages/curl
+  tag: "8.21.0"
+  pullPolicy: IfNotPresent
+
 resources: {}

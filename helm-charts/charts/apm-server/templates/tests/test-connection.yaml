@@ -10,13 +10,13 @@ metadata:
 spec:
   containers:
     - name: test-apm-server
-      image: {{.Values.apmServerImage.repository }}:{{.Values.apmServerImage.tag }}
-      imagePullPolicy: {{.Values.apmServerImage.pullPolicy }}
+      image: {{.Values.curlimagesImage.repository }}:{{.Values.curlimagesImage.tag }}
+      imagePullPolicy: {{.Values.curlimagesImage.pullPolicy }}
       command: [ '/bin/sh', '-c' ]
       args:
         - |
           echo "### Test: APM Server Connection using service name: {{ include "apm-server.fullname" . }}"
-          wget -qO- http://{{ include "apm-server.fullname" . }}:{{ .Values.service.port }}/ || exit 1
+          curl -sf http://{{ include "apm-server.fullname" . }}:{{ .Values.service.port }}/ || exit 1
           echo "Exit code: $?"
 
   restartPolicy: Never
