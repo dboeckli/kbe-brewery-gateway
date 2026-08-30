@@ -38,6 +38,12 @@ spec:
               value: "http://{{ .Values.elasticsearch.service.serviceFQDN }}:{{ .Values.elasticsearch.service.port }}"
             - name: SERVER_HOST
               value: "0.0.0.0"
+            - name: I18N_LOCALES
+              value: '["en"]'
+            - name: I18N_DEFAULT_LOCALE
+              value: "en"
+            - name: I18N_ALLOW_LOCALE_COOKIE
+              value: "false"
           readinessProbe:
             httpGet:
               path: /api/status
