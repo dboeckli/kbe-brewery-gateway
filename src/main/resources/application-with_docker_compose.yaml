@@ -89,7 +89,7 @@ management:
     tracing:
       export:
         otlp:
-          endpoint: http://host.docker.internal:4318
+          endpoint: http://host.docker.internal:4318/v1/traces
   otlp:
     metrics:
       export:
