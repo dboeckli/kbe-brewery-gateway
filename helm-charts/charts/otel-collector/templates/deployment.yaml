@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "otel-collector.fullname" . }}
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    {{- include "otel-collector.labels" . | nindent 4 }}
+    app.kubernetes.io/component: otel-collector
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "otel-collector.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: otel-collector
+  template:
+    metadata:
+      labels:
+        {{- include "otel-collector.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: otel-collector
+    spec:
+      containers:
+        - name: otelcol
+          image: {{.Values.otelCollectorImage.repository }}:{{.Values.otelCollectorImage.tag }}
+          imagePullPolicy: {{.Values.otelCollectorImage.pullPolicy }}
+          args:
+            - "--config=/etc/otelcol/config.yaml"
+          ports:
+            - name: otlp-grpc
+              containerPort: {{ .Values.service.grpcPort }}
+              protocol: TCP
+            - name: otlp-http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+            - name: health
+              containerPort: {{ .Values.service.healthPort }}
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /
+              port: health
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 6
+          livenessProbe:
+            httpGet:
+              path: /
+              port: health
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          volumeMounts:
+            - name: config
+              mountPath: /etc/otelcol
+              readOnly: true
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+        - name: config
+          configMap:
+            name: {{ include "otel-collector.fullname" . }}-config

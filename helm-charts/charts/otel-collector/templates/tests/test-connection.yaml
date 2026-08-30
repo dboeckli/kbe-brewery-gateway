@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "otel-collector.fullname" . }}-test"
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    {{- include "otel-collector.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: test-otel-collector
+      image: {{.Values.curlimagesImage.repository }}:{{.Values.curlimagesImage.tag }}
+      imagePullPolicy: {{.Values.curlimagesImage.pullPolicy }}
+      command: [ '/bin/sh', '-c' ]
+      args:
+        - |
+          echo "### Test: OTel Collector Connection using service name: {{ include "otel-collector.fullname" . }}"
+          curl -sf http://{{ include "otel-collector.fullname" . }}:{{ .Values.service.healthPort }}/ || exit 1
+          echo "Exit code: $?"
+
+  restartPolicy: Never

@@ -1,3 +1,6 @@
+nameOverride: "kbe-brewery-gateway"
+fullnameOverride: "kbe-brewery-gateway"
+
 global:
   timezone: Europe/Zurich
   timezonePath: /etc/localtime
@@ -52,6 +55,8 @@ probes:
 mysql:
   enabled: true
 
+  fullnameOverride: "kbe-brewery-gateway-mysql"
+
   database: beerservice
 
   port: 3306
@@ -68,6 +73,8 @@ mysql:
 jms:
   enabled: true
 
+  fullnameOverride: "kbe-brewery-gateway-jms"
+
   broker:
     port: 61616
     nodePort: 30616
@@ -82,8 +89,28 @@ jms:
 
 elasticsearch:
   enabled: true
+  fullnameOverride: "kbe-brewery-gateway-elasticsearch"
   serviceFQDN: "kbe-brewery-gateway-elasticsearch.kbe-brewery-gateway.svc.cluster.local"
   port: 9200
+
+kibana:
+  enabled: true
+  fullnameOverride: "kbe-brewery-gateway-kibana"
+  serviceFQDN: "kbe-brewery-gateway-kibana.kbe-brewery-gateway.svc.cluster.local"
+
+filebeat:
+  enabled: true
+  fullnameOverride: "kbe-brewery-gateway-filebeat"
+  serviceFQDN: "kbe-brewery-gateway-filebeat.kbe-brewery-gateway.svc.cluster.local"
+
+otelCollector:
+  enabled: true
+  serviceFQDN: "kbe-brewery-gateway-otel-collector.kbe-brewery-gateway.svc.cluster.local"
+  grpcPort: 4317
+  port: 4318
+
+apmServer:
+  enabled: true
 
 beerService:
   enabled: true
@@ -106,16 +133,28 @@ ingress:
 
 # Section for overriding values in subcharts.
 
-# this is the alias for kbe-brewery-inventory-micro-service. override does not work with the name of the service
+otel-collector:
+  fullnameOverride: "kbe-brewery-gateway-otel-collector"
+
+apm-server:
+  fullnameOverride: "kbe-brewery-gateway-apm-server"
+
+# this is the alias for kbe-brewery-inventory-micro-service. the fullnameOverride overrides the
+# service name so that the sibling services are reachable under kbe-brewery-gateway-<alias>
 inventory-service:
+  fullnameOverride: "kbe-brewery-gateway-inventory-service"
   jms:
     enabled: false
     serviceFQDN: "kbe-brewery-gateway-jms.kbe-brewery-gateway.svc.cluster.local"
   mysql:
     enabled: false
     serviceFQDN: "kbe-brewery-gateway-mysql.kbe-brewery-gateway.svc.cluster.local"
-  
+
+inventory-failover:
+  fullnameOverride: "kbe-brewery-gateway-inventory-failover"
+
 beer-service:
+  fullnameOverride: "kbe-brewery-gateway-beer-service"
   jms:
     enabled: false
     serviceFQDN: "kbe-brewery-gateway-jms.kbe-brewery-gateway.svc.cluster.local"
@@ -132,9 +171,10 @@ beer-service:
       port: 8082
     failover:
       serviceFQDN: "kbe-brewery-gateway-inventory-failover.kbe-brewery-gateway.svc.cluster.local"
-      port: 8083  
-      
+      port: 8083
+
 order-service:
+  fullnameOverride: "kbe-brewery-gateway-order-service"
   jms:
     enabled: false
     serviceFQDN: "kbe-brewery-gateway-jms.kbe-brewery-gateway.svc.cluster.local"
@@ -153,10 +193,10 @@ order-service:
       port: 8082
     failover:
       serviceFQDN: "kbe-brewery-gateway-inventory-failover.kbe-brewery-gateway.svc.cluster.local"
-      port: 8083    
+      port: 8083
     beerService:
       serviceFQDN: "kbe-brewery-gateway-beer-service.kbe-brewery-gateway.svc.cluster.local"
-      port: 8080  
+      port: 8080
 
 
 

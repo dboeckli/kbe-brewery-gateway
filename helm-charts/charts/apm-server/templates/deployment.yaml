@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "apm-server.fullname" . }}
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    {{- include "apm-server.labels" . | nindent 4 }}
+    app.kubernetes.io/component: apm-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "apm-server.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: apm-server
+  template:
+    metadata:
+      labels:
+        {{- include "apm-server.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: apm-server
+    spec:
+      containers:
+        - name: apm-server
+          image: {{.Values.apmServerImage.repository }}:{{.Values.apmServerImage.tag }}
+          imagePullPolicy: {{.Values.apmServerImage.pullPolicy }}
+          env:
+            - name: ELASTICSEARCH_HOSTS
+              value: "http://{{ .Values.elasticsearch.serviceFQDN }}:{{ .Values.elasticsearch.port }}"
+            - name: output.elasticsearch.hosts
+              value: '["http://{{ .Values.elasticsearch.serviceFQDN }}:{{ .Values.elasticsearch.port }}"]'
+            - name: apm-server.kibana.enabled
+              value: "true"
+            - name: apm-server.kibana.host
+              value: "{{ .Values.kibana.serviceFQDN }}:{{ .Values.kibana.port }}"
+            - name: apm-server.otlp.enabled
+              value: "true"
+            - name: apm-server.otlp.http.enabled
+              value: "true"
+            - name: apm-server.otlp.http.host
+              value: "0.0.0.0:{{ .Values.service.port }}"
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.targetPort }}
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 6
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}

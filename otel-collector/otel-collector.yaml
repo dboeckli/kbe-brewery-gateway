@@ -1,0 +1,39 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+
+processors:
+  # Verwirft leere Histogramm-Datenpunkte (count=0): apm-server leitet daraus
+  # NaN min/max ab, die ES als 'Non-standard token NaN' ablehnt.
+  filter/drop-empty-histograms:
+    metrics:
+      datapoint:
+        - 'metric.type == METRIC_DATA_TYPE_HISTOGRAM and datapoint.count == 0'
+  batch:
+    timeout: 5s
+    send_batch_size: 1000
+
+extensions:
+  health_check:
+    endpoint: 0.0.0.0:13133
+
+exporters:
+  # Traces + Metrics zu Elastic APM Server (OTLP HTTP)
+  otlp_http/elastic-apm:
+    endpoint: http://apm-server:8200
+
+service:
+  extensions: [health_check]
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [otlp_http/elastic-apm]
+    metrics:
+      receivers: [otlp]
+      processors: [filter/drop-empty-histograms, batch]
+      exporters: [otlp_http/elastic-apm]

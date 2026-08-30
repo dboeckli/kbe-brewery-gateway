@@ -88,7 +88,7 @@ spec:
               readOnly: true
 
       containers:
-        - name: {{ .Chart.Name }}
+        - name: @project.artifactId@
           image: "{{ .Values.image.registry }}/@project.artifactId@:{{ .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
@@ -118,6 +118,16 @@ spec:
               value: "http://{{ .Values.orderService.serviceFQDN }}:{{ .Values.orderService.port }}"
             - name: SPRING_CLOUD_GATEWAY_SERVER_WEBFLUX_ROUTES_2_PREDICATES_0
               value: "Path=/api/v1/customers/**"
+
+            # OTLP EXPORT TO THE OTEL COLLECTOR
+            - name: MANAGEMENT_TRACING_EXPORT_OTLP_ENABLED
+              value: "true"
+            - name: MANAGEMENT_OPENTELEMETRY_TRACING_EXPORT_OTLP_ENDPOINT
+              value: "http://{{ .Values.otelCollector.serviceFQDN }}:{{ .Values.otelCollector.port }}"
+            - name: MANAGEMENT_OTLP_METRICS_EXPORT_ENABLED
+              value: "true"
+            - name: MANAGEMENT_OTLP_METRICS_EXPORT_URL
+              value: "http://{{ .Values.otelCollector.serviceFQDN }}:{{ .Values.otelCollector.port }}/v1/metrics"
 
 
           envFrom:

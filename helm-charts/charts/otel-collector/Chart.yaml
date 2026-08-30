@@ -1,0 +1,6 @@
+apiVersion: v2
+name: kbe-brewery-gateway-otel-collector-chart
+description: A Helm subchart for the OpenTelemetry Collector
+type: application
+version: @helm.chart.version@
+appVersion: "0.159.0"

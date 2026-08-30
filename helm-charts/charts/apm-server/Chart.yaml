@@ -1,0 +1,6 @@
+apiVersion: v2
+name: kbe-brewery-gateway-apm-server-chart
+description: A Helm subchart for the Elastic APM Server
+type: application
+version: @helm.chart.version@
+appVersion: "9.5.2"

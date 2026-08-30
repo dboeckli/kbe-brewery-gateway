@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "apm-server.fullname" . }}-test"
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    {{- include "apm-server.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: test-apm-server
+      image: {{.Values.curlimagesImage.repository }}:{{.Values.curlimagesImage.tag }}
+      imagePullPolicy: {{.Values.curlimagesImage.pullPolicy }}
+      command: [ '/bin/sh', '-c' ]
+      args:
+        - |
+          echo "### Test: APM Server Connection using service name: {{ include "apm-server.fullname" . }}"
+          curl -sf http://{{ include "apm-server.fullname" . }}:{{ .Values.service.port }}/ || exit 1
+          echo "Exit code: $?"
+
+  restartPolicy: Never
