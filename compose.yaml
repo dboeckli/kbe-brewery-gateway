@@ -61,6 +61,37 @@ services:
         condition: service_started
       elasticsearch:
         condition: service_healthy
+
+  otel-collector:
+    container_name: otel-collector
+    image: otel/opentelemetry-collector-contrib:0.159.0
+    command: [ "--config=/etc/otel-collector-config.yaml" ]
+    volumes:
+      - ./otel-collector/otel-collector.yaml:/etc/otel-collector-config.yaml:ro
+    ports:
+      - "4317:4317"
+      - "4318:4318"
+      - "13133:13133"
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+
+  apm-server:
+    container_name: apm-server
+    image: docker.elastic.co/apm/apm-server:9.5.2
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    environment:
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+      output.elasticsearch.hosts: '["http://elasticsearch:9200"]'
+      apm-server.kibana.enabled: "true"
+      apm-server.kibana.host: kibana:5601
+      apm-server.otlp.enabled: "true"
+      apm-server.otlp.http.enabled: "true"
+      apm-server.otlp.http.host: 0.0.0.0:8200
+    ports:
+      - "8200:8200"
   
   jms:
     container_name: jms
@@ -87,6 +118,11 @@ services:
         condition: service_healthy
       jms:
         condition: service_healthy
+    environment:
+      MANAGEMENT_TRACING_EXPORT_OTLP_ENABLED: "true"
+      MANAGEMENT_OPENTELEMETRY_TRACING_EXPORT_OTLP_ENDPOINT: http://otel-collector:4318
+      MANAGEMENT_OTLP_METRICS_EXPORT_ENABLED: "true"
+      MANAGEMENT_OTLP_METRICS_EXPORT_URL: http://otel-collector:4318/v1/metrics
     labels:
       collect_logs_with_filebeat: "true"
       decode_log_event_to_json_object: "true"
@@ -113,6 +149,11 @@ services:
       SPRING_ARTEMIS_USER: artemis
       SPRING_ARTEMIS_PASSWORD: simetraehcapa
       SPRING_ARTEMIS_BROKER_URL: tcp://jms:61616
+
+      MANAGEMENT_TRACING_EXPORT_OTLP_ENABLED: "true"
+      MANAGEMENT_OPENTELEMETRY_TRACING_EXPORT_OTLP_ENDPOINT: http://otel-collector:4318
+      MANAGEMENT_OTLP_METRICS_EXPORT_ENABLED: "true"
+      MANAGEMENT_OTLP_METRICS_EXPORT_URL: http://otel-collector:4318/v1/metrics
     restart: on-failure
     labels:
       collect_logs_with_filebeat: "true"
@@ -143,6 +184,11 @@ services:
       SPRING_ARTEMIS_BROKER_URL: tcp://jms:61616
       
       SFG_BREWERY_BEER-INVENTORY-SERVICE-HOST: http://inventory-service:8082
+
+      MANAGEMENT_TRACING_EXPORT_OTLP_ENABLED: "true"
+      MANAGEMENT_OPENTELEMETRY_TRACING_EXPORT_OTLP_ENDPOINT: http://otel-collector:4318
+      MANAGEMENT_OTLP_METRICS_EXPORT_ENABLED: "true"
+      MANAGEMENT_OTLP_METRICS_EXPORT_URL: http://otel-collector:4318/v1/metrics
     labels:
       collect_logs_with_filebeat: "true"
       decode_log_event_to_json_object: "true"
@@ -172,6 +218,11 @@ services:
       SPRING_ARTEMIS_BROKER_URL: tcp://jms:61616
       
       SFG_BREWERY_BEER-SERVICE-HOST: http://beer-service:8080
+
+      MANAGEMENT_TRACING_EXPORT_OTLP_ENABLED: "true"
+      MANAGEMENT_OPENTELEMETRY_TRACING_EXPORT_OTLP_ENDPOINT: http://otel-collector:4318
+      MANAGEMENT_OTLP_METRICS_EXPORT_ENABLED: "true"
+      MANAGEMENT_OTLP_METRICS_EXPORT_URL: http://otel-collector:4318/v1/metrics
     labels:
       collect_logs_with_filebeat: "true"
       decode_log_event_to_json_object: "true"

@@ -1,0 +1,24 @@
+global:
+  namespace: kbe-brewery-gateway
+
+service:
+  type: ClusterIP
+
+  grpcPort: 4317
+  port: 4318
+  healthPort: 13133
+
+elasticsearch:
+  serviceFQDN: "kbe-brewery-gateway-elasticsearch.kbe-brewery-gateway.svc.cluster.local"
+  port: 9200
+
+apmServer:
+  serviceFQDN: "kbe-brewery-gateway-apm-server.kbe-brewery-gateway.svc.cluster.local"
+  port: 8200
+
+otelCollectorImage:
+  repository: otel/opentelemetry-collector-contrib
+  tag: "0.159.0"
+  pullPolicy: IfNotPresent
+
+resources: {}

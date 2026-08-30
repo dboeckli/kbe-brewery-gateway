@@ -85,14 +85,20 @@ management:
         requests:
           name: http-client-requests
 
+  opentelemetry:
+    tracing:
+      export:
+        otlp:
+          endpoint: http://host.docker.internal:4318
   otlp:
     metrics:
       export:
-        enabled: false
+        enabled: true
+        url: http://host.docker.internal:4318/v1/metrics
   tracing:
     export:
       otlp:
-        enabled: false
+        enabled: true
     sampling:
       probability: 1.0
 

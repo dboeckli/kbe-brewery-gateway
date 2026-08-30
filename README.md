@@ -7,46 +7,108 @@ Official Website: https://kubebyexample.com
 
 ## Overview
 
-This project depends on several other projects and components which are all in the compose-local.yaml
+Reactive API gateway (Spring Cloud Gateway / WebFlux, port 9090) that routes requests to the sibling
+brewery microservices. Locally, the whole stack is defined in `compose.yaml`.
 
-projects:
-Each projects is a microservice with its own repository. you can build those with mvn install. this will push
-an image to your local docker image repos with the name: local/.....
-for simplicity we use the images create by springframeworkguru, so the prefix is: springframeworkguru/
+Sibling microservices (each is a microservice with its own repository; the images are pulled from
+Docker Hub with the prefix `domboeckli/`):
 
-- inventory
 - beer-service
 - order-service
+- inventory-service
 - inventory-failover
-  components:
-- API Gateway
-- Service Discovery (Eureka)
-- Config Server
-- Circuit Breaker (Resilience4j)
-- Distributed Tracing (Zipkin)
-- Message Broker (ActiveMQ)
+
+You can build those projects yourself with `mvn install`; this pushes an image to your local Docker
+image repo as `local/...`.
+
+Components provided by `compose.yaml`:
+
+- API Gateway (this project)
 - Database (MySQL)
-- Caching (Redis)
-- Monitoring (Prometheus & Grafana)
+- Message Broker (Artemis / JMS)
+- Consolidated Logging (Elasticsearch, Kibana, Filebeat)
+
+### Architecture
+
+```mermaid
+flowchart LR
+    Client["Client"] -->|"/api/v1/**"| GW["API Gateway<br/>(Spring Cloud Gateway)<br/>:9090"]
+    GW -->|"/api/v1/beer*, /api/v1/beerUpc/*"| Beer["Beer Service<br/>:8080"]
+    GW -->|"/api/v1/beer/*/inventory"| Inv["Inventory Service<br/>:8082"]
+    GW -->|"/api/v1/customers/**"| Order["Order Service<br/>:8081"]
+    Inv -->|"fallback"| Failover["Inventory Failover<br/>:8083"]
+
+    Beer --> DB[("MySQL<br/>:3306")]
+    Order --> DB
+    Inv --> DB
+
+    Beer --> JMS["Artemis JMS<br/>:61616"]
+    Order --> JMS
+    Inv --> JMS
+
+    Beer -.-> ELK["ELK Stack<br/>(Filebeat / Elasticsearch / Kibana)"]
+    Order -.-> ELK
+    Inv -.-> ELK
+    Failover -.-> ELK
+    GW -.-> ELK
+```
+
+### Monitoring / ELK Stack
+
+```mermaid
+flowchart LR
+    subgraph Apps["Applications"]
+        GW["API Gateway<br/>:9090"]
+        Beer["Beer Service<br/>:8080"]
+        Order["Order Service<br/>:8081"]
+        Inv["Inventory Service<br/>:8082"]
+        Failover["Inventory Failover<br/>:8083"]
+    end
+
+    subgraph Otel["Telemetry"]
+        OC["OpenTelemetry Collector<br/>:4318"]
+        APM["APM Server<br/>:8200"]
+    end
+
+    subgraph Elk["ELK Stack"]
+        ES[("Elasticsearch<br/>:9200")]
+        KB["Kibana<br/>:5601"]
+        FB["Filebeat"]
+    end
+
+    GW -->|"OTLP traces + metrics"| OC
+    Beer -->|"OTLP traces + metrics"| OC
+    Order -->|"OTLP traces + metrics"| OC
+    Inv -->|"OTLP traces + metrics"| OC
+    OC -->|"OTLP"| APM
+    APM --> ES
+    FB -->|"container logs"| ES
+    ES --> KB
+```
+
+Kibana Web Gui:
+
+- compose: http://localhost:5601
+- Kubernetes (NodePort): http://localhost:30561/app/home#/
 
 ## Commands
 
 - Start everything
 
 ```bash
-docker compose -f docker-manual/compose-local.yaml up -d
+docker compose -f compose.yaml up -d
 ```
 
 - Stop all
 
 ```bash
-docker compose -f docker-manual/compose-local.yaml stop
+docker compose -f compose.yaml stop
 ```
 
 - Stop and Remove all
 
 ```bash
-docker compose -f docker-manual/compose-local.yaml down
+docker compose -f compose.yaml down
 ```
 
 - Check what is running
@@ -57,11 +119,15 @@ docker ps
 
 - Rebuild filebeat
 
-Remark: is using the directory under filebeat. there is a Dockerfile and yml file for configuration.
+Remark: uses the directory `filebeat/` which contains a Dockerfile and the configuration yml. Note
+that `compose.yaml` currently uses the stock filebeat image, so this requires a `build` section.
 
 ```bash
-docker-compose -f docker-manual/compose-local.yaml build filebeat
+docker compose -f compose.yaml build filebeat
 ```
+
+> Note: `compose.yaml` is also started automatically when the app boots
+> (`spring.docker.compose.enabled=true`).
 
 After installation you can access the kibana web gui and check the log. first you need a little configuration described below
 
@@ -109,10 +175,7 @@ sbx kit add kbe-brewery-gateway "git+https://github.com/dboeckli/opencode-sandbo
 
 ## Kubernetes
 
-[Kubernetes Documentation](k8s-manual/KubeCommands.md)
-
-The approach having all kubernetes files of the other projects here should be reworked. the kubernetes files should go into the
-appropriate projects, templating with helm and deployment into a kubernetes environment should be considered.
+Deployment is Helm-only; see [Deployment with Helm](#deployment-with-helm) below.
 
 ### Deployment with Helm
 
@@ -208,7 +271,7 @@ Some Manual Setup is needed:
 Go to the kibana Gui and:
 discover -> create index pattern: filebeat* -> next -> add @timestamp -> create index pattern
 
-![Create Index Pattern](k8s-manual/images/create%20index%20pattern.png)
+![Create Index Pattern](docs/images/create%20index%20pattern.png)
 
 Go back to discover:
 

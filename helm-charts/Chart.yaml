@@ -38,3 +38,15 @@ dependencies:
     repository: file://charts/filebeat
     condition: filebeat.enabled
 
+  - name: kbe-brewery-gateway-otel-collector-chart
+    alias: otel-collector
+    version: @helm.chart.version@
+    repository: file://charts/otel-collector
+    condition: otelCollector.enabled
+
+  - name: kbe-brewery-gateway-apm-server-chart
+    alias: apm-server
+    version: @helm.chart.version@
+    repository: file://charts/apm-server
+    condition: apmServer.enabled
+

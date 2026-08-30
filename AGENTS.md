@@ -67,8 +67,7 @@ is needed here. On a normal host (Windows/CI) this does not apply either.
 
 - Reactive API gateway (Spring Cloud Gateway WebFlux); routes in `helm-charts/templates/deployment.yaml`
   (env `SPRING_CLOUD_GATEWAY_SERVER_WEBFLUX_ROUTES_*`) point to the sibling services.
-- `compose.yaml` starts the sibling services locally for tests; `docker-manual/compose-local.yaml`
-  is a legacy variant.
+- `compose.yaml` starts the sibling services locally for tests.
 
 ## Running locally
 
