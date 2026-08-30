@@ -124,7 +124,7 @@ services:
         condition: service_healthy
     environment:
       MANAGEMENT_TRACING_EXPORT_OTLP_ENABLED: "true"
-      MANAGEMENT_OPENTELEMETRY_TRACING_EXPORT_OTLP_ENDPOINT: http://otel-collector:4318
+      MANAGEMENT_OPENTELEMETRY_TRACING_EXPORT_OTLP_ENDPOINT: http://otel-collector:4318/v1/traces
       MANAGEMENT_OTLP_METRICS_EXPORT_ENABLED: "true"
       MANAGEMENT_OTLP_METRICS_EXPORT_URL: http://otel-collector:4318/v1/metrics
     labels:
@@ -155,7 +155,7 @@ services:
       SPRING_ARTEMIS_BROKER_URL: tcp://jms:61616
 
       MANAGEMENT_TRACING_EXPORT_OTLP_ENABLED: "true"
-      MANAGEMENT_OPENTELEMETRY_TRACING_EXPORT_OTLP_ENDPOINT: http://otel-collector:4318
+      MANAGEMENT_OPENTELEMETRY_TRACING_EXPORT_OTLP_ENDPOINT: http://otel-collector:4318/v1/traces
       MANAGEMENT_OTLP_METRICS_EXPORT_ENABLED: "true"
       MANAGEMENT_OTLP_METRICS_EXPORT_URL: http://otel-collector:4318/v1/metrics
     restart: on-failure
@@ -190,7 +190,7 @@ services:
       SFG_BREWERY_BEER-INVENTORY-SERVICE-HOST: http://inventory-service:8082
 
       MANAGEMENT_TRACING_EXPORT_OTLP_ENABLED: "true"
-      MANAGEMENT_OPENTELEMETRY_TRACING_EXPORT_OTLP_ENDPOINT: http://otel-collector:4318
+      MANAGEMENT_OPENTELEMETRY_TRACING_EXPORT_OTLP_ENDPOINT: http://otel-collector:4318/v1/traces
       MANAGEMENT_OTLP_METRICS_EXPORT_ENABLED: "true"
       MANAGEMENT_OTLP_METRICS_EXPORT_URL: http://otel-collector:4318/v1/metrics
     labels:
@@ -224,7 +224,7 @@ services:
       SFG_BREWERY_BEER-SERVICE-HOST: http://beer-service:8080
 
       MANAGEMENT_TRACING_EXPORT_OTLP_ENABLED: "true"
-      MANAGEMENT_OPENTELEMETRY_TRACING_EXPORT_OTLP_ENDPOINT: http://otel-collector:4318
+      MANAGEMENT_OPENTELEMETRY_TRACING_EXPORT_OTLP_ENDPOINT: http://otel-collector:4318/v1/traces
       MANAGEMENT_OTLP_METRICS_EXPORT_ENABLED: "true"
       MANAGEMENT_OTLP_METRICS_EXPORT_URL: http://otel-collector:4318/v1/metrics
     labels:

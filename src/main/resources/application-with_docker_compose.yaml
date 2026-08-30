@@ -26,7 +26,7 @@ spring:
             - id: beer-service
               uri: http://host.docker.internal:8080
               predicates:
-                - Path=/api/v1/beer/*,/api/v1/beerUpc/*
+                - Path=/api/v1/beer,/api/v1/beer/*,/api/v1/beerUpc/*
             - id: inventory-service
               uri: http://host.docker.internal:8082
               predicates:
@@ -89,7 +89,7 @@ management:
     tracing:
       export:
         otlp:
-          endpoint: http://host.docker.internal:4318
+          endpoint: http://host.docker.internal:4318/v1/traces
   otlp:
     metrics:
       export:

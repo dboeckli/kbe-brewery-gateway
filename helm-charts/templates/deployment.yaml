@@ -123,7 +123,7 @@ spec:
             - name: MANAGEMENT_TRACING_EXPORT_OTLP_ENABLED
               value: "true"
             - name: MANAGEMENT_OPENTELEMETRY_TRACING_EXPORT_OTLP_ENDPOINT
-              value: "http://{{ .Values.otelCollector.serviceFQDN }}:{{ .Values.otelCollector.port }}"
+              value: "http://{{ .Values.otelCollector.serviceFQDN }}:{{ .Values.otelCollector.port }}/v1/traces"
             - name: MANAGEMENT_OTLP_METRICS_EXPORT_ENABLED
               value: "true"
             - name: MANAGEMENT_OTLP_METRICS_EXPORT_URL
