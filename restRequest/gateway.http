@@ -1,33 +1,48 @@
-### get beers
+### get-beers
 < scripts/traceparent.js
 GET http://localhost:{{application-port}}/api/v1/beer
 Accept: application/json
 traceparent: 00-{{traceId}}-{{spanId}}-03
 baggage: testBaggage=kbe-brewery-gateway
 
-### get customers
+> {%
+    const first = response.body.content[0];
+    if (first) {
+        client.environment.set("beerId", first.id);
+        client.environment.set("beerUpc", first.upc);
+    }
+%}
+
+### get-customers
 < scripts/traceparent.js
 GET http://localhost:{{application-port}}/api/v1/customers/?
-    pageNumber={{$random.integer(100)}}&
-    pageSize={{$random.integer(100)}}
+    pageNumber=0&
+    pageSize=25
 traceparent: 00-{{traceId}}-{{spanId}}-03
 baggage: testBaggage=kbe-brewery-gateway
 
-### get beer by id
+> {%
+    const first = response.body.content[0];
+    if (first) {
+        client.environment.set("customerId", first.id);
+    }
+%}
+
+### get-beer-by-id
 < scripts/traceparent.js
-GET http://localhost:{{application-port}}/api/v1/beer/0db5a1a1-318d-4b6c-ac76-30a054938a7e
+GET http://localhost:{{application-port}}/api/v1/beer/{{beerId}}
 Accept: application/json
 traceparent: 00-{{traceId}}-{{spanId}}-03
 baggage: testBaggage=kbe-brewery-gateway
 
-### get beer by upc
+### get-beer-by-upc
 < scripts/traceparent.js
-GET http://localhost:{{application-port}}/api/v1/beerUpc/0083783375232
+GET http://localhost:{{application-port}}/api/v1/beerUpc/{{beerUpc}}
 Accept: application/json
 traceparent: 00-{{traceId}}-{{spanId}}-03
 baggage: testBaggage=kbe-brewery-gateway
 
-### create beer
+### create-beer
 < scripts/traceparent.js
 POST http://localhost:{{application-port}}/api/v1/beer
 Content-Type: application/json
@@ -42,46 +57,52 @@ baggage: testBaggage=kbe-brewery-gateway
   "price": 4.5
 }
 
-### update beer
+> {%
+    if (response.body.id) {
+        client.environment.set("newBeerId", response.body.id);
+    }
+%}
+
+### update-beer
 < scripts/traceparent.js
-PUT http://localhost:{{application-port}}/api/v1/beer/0db5a1a1-318d-4b6c-ac76-30a054938a7e
+PUT http://localhost:{{application-port}}/api/v1/beer/{{newBeerId}}
 Content-Type: application/json
 Accept: application/json
 traceparent: 00-{{traceId}}-{{spanId}}-03
 baggage: testBaggage=kbe-brewery-gateway
 
 {
-  "id": "0db5a1a1-318d-4b6c-ac76-30a054938a7e",
-  "beerName": "Golden Buddha",
+  "id": "{{newBeerId}}",
+  "beerName": "Gateway Test Beer",
   "beerStyle": "IPA",
-  "upc": "0083783375232",
+  "upc": "1234567890123",
   "price": 3.5
 }
 
-### delete beer
+### delete-beer
 < scripts/traceparent.js
-DELETE http://localhost:{{application-port}}/api/v1/beer/0db5a1a1-318d-4b6c-ac76-30a054938a7e
+DELETE http://localhost:{{application-port}}/api/v1/beer/{{newBeerId}}
 Accept: application/json
 traceparent: 00-{{traceId}}-{{spanId}}-03
 baggage: testBaggage=kbe-brewery-gateway
 
-### get beer inventory
+### get-beer-inventory
 < scripts/traceparent.js
-GET http://localhost:{{application-port}}/api/v1/beer/0db5a1a1-318d-4b6c-ac76-30a054938a7e/inventory
+GET http://localhost:{{application-port}}/api/v1/beer/{{beerId}}/inventory
 Accept: application/json
 traceparent: 00-{{traceId}}-{{spanId}}-03
 baggage: testBaggage=kbe-brewery-gateway
 
-### get customer orders
+### get-customer-orders
 < scripts/traceparent.js
-GET http://localhost:{{application-port}}/api/v1/customers/ffce6db0-175d-41ca-a1a5-45e151f928e8/orders
+GET http://localhost:{{application-port}}/api/v1/customers/{{customerId}}/orders
 Accept: application/json
 traceparent: 00-{{traceId}}-{{spanId}}-03
 baggage: testBaggage=kbe-brewery-gateway
 
-### create order
+### create-order
 < scripts/traceparent.js
-POST http://localhost:{{application-port}}/api/v1/customers/ffce6db0-175d-41ca-a1a5-45e151f928e8/orders
+POST http://localhost:{{application-port}}/api/v1/customers/{{customerId}}/orders
 Content-Type: application/json
 Accept: application/json
 traceparent: 00-{{traceId}}-{{spanId}}-03
@@ -91,15 +112,28 @@ baggage: testBaggage=kbe-brewery-gateway
   "customerRef": "gateway-test",
   "beerOrderLines": [
     {
-      "beerId": "0db5a1a1-318d-4b6c-ac76-30a054938a7e",
+      "beerId": "{{beerId}}",
       "orderQuantity": 2
     }
   ]
 }
 
-### pickup order
+> {%
+    if (response.body.id) {
+        client.environment.set("orderId", response.body.id);
+    }
+%}
+
+### get-order-by-id
 < scripts/traceparent.js
-PUT http://localhost:{{application-port}}/api/v1/customers/ffce6db0-175d-41ca-a1a5-45e151f928e8/orders/{{$guid}}/pickup
+GET http://localhost:{{application-port}}/api/v1/customers/{{customerId}}/orders/{{orderId}}
+Accept: application/json
+traceparent: 00-{{traceId}}-{{spanId}}-03
+baggage: testBaggage=kbe-brewery-gateway
+
+### pickup-order
+< scripts/traceparent.js
+PUT http://localhost:{{application-port}}/api/v1/customers/{{customerId}}/orders/{{orderId}}/pickup
 Content-Type: application/json
 Accept: application/json
 traceparent: 00-{{traceId}}-{{spanId}}-03
