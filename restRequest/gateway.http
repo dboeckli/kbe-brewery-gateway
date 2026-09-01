@@ -1,3 +1,5 @@
+# Globale Variablen (beerId, beerUpc, customerId, newBeerId, orderId): [http-client.global](.idea/httpRequests/http-client.global)
+
 ### get-beers
 < scripts/traceparent.js
 GET http://localhost:{{application-port}}/api/v1/beer
@@ -8,8 +10,8 @@ baggage: testBaggage=kbe-brewery-gateway
 > {%
     const first = response.body.content[0];
     if (first) {
-        client.environment.set("beerId", first.id);
-        client.environment.set("beerUpc", first.upc);
+        client.global.set("beerId", first.id);
+        client.global.set("beerUpc", first.upc);
     }
 %}
 
@@ -24,7 +26,7 @@ baggage: testBaggage=kbe-brewery-gateway
 > {%
     const first = response.body.content[0];
     if (first) {
-        client.environment.set("customerId", first.id);
+        client.global.set("customerId", first.id);
     }
 %}
 
@@ -59,7 +61,7 @@ baggage: testBaggage=kbe-brewery-gateway
 
 > {%
     if (response.body.id) {
-        client.environment.set("newBeerId", response.body.id);
+        client.global.set("newBeerId", response.body.id);
     }
 %}
 
@@ -120,7 +122,7 @@ baggage: testBaggage=kbe-brewery-gateway
 
 > {%
     if (response.body.id) {
-        client.environment.set("orderId", response.body.id);
+        client.global.set("orderId", response.body.id);
     }
 %}
 
