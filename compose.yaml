@@ -82,7 +82,7 @@ services:
 
   apm-server:
     container_name: apm-server
-    image: docker.elastic.co/apm/apm-server:9.5.2
+    image: docker.elastic.co/apm/apm-server:9.5.3
     depends_on:
       elasticsearch:
         condition: service_healthy
