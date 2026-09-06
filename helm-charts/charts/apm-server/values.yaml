@@ -18,7 +18,7 @@ kibana:
 
 apmServerImage:
   repository: docker.elastic.co/apm/apm-server
-  tag: "9.5.2"
+  tag: "9.5.3"
   pullPolicy: IfNotPresent
 
 curlimagesImage:
