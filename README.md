@@ -158,13 +158,24 @@ sbx settings set kit.allowedSources --% "[\"docker.io/\",\"github.com/dboeckli/\
 Start a new sandbox:
 
 ```powershell
-sbx run opencode --name kbe-brewery-gateway --kit "git+https://github.com/dboeckli/opencode-sandbox-kit.git#dir=opencode-agent" "C:\development\projects\kbe-brewery-gateway"
+sbx run opencode --name kbe-brewery-gateway `
+    --static-mcp idea `
+    --kit "git+https://github.com/dboeckli/opencode-sandbox-kit.git#dir=opencode-agent" `
+    -t docker/sandbox-templates:opencode-docker-0.5.0 `
+    "C:\development\projects\kbe-brewery-gateway" `
+    "C:\development\maven-repo:ro"
 ```
 
 Start the sandbox with Kubernetes support:
 
 ```powershell
-sbx run opencode --name kbe-brewery-gateway --kit "git+https://github.com/dboeckli/opencode-sandbox-kit.git#dir=opencode-agent" "C:\development\projects\kbe-brewery-gateway" "$env:USERPROFILE\.kube:ro"
+sbx run opencode --name kbe-brewery-gateway `
+    --static-mcp idea `
+    --kit "git+https://github.com/dboeckli/opencode-sandbox-kit.git#dir=opencode-agent" `
+    -t docker/sandbox-templates:opencode-docker-0.5.0 `
+    "C:\development\projects\kbe-brewery-gateway" `
+    "$env:USERPROFILE\.kube:ro" `
+    "C:\development\maven-repo:ro"
 ```
 
 Apply the kit to an existing sandbox (restarts the sandbox, VM state is kept):
