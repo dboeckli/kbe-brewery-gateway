@@ -18,7 +18,7 @@ apmServer:
 
 otelCollectorImage:
   repository: otel/opentelemetry-collector-contrib
-  tag: "0.160.0"
+  tag: "0.161.0"
   pullPolicy: IfNotPresent
 
 curlimagesImage:
