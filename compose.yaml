@@ -32,7 +32,7 @@ services:
   
   kibana:
     container_name: kibana
-    image: docker.elastic.co/kibana/kibana:9.5.3
+    image: docker.elastic.co/kibana/kibana:9.5.4
     ports:
       - 5601:5601
     restart: on-failure
@@ -68,7 +68,7 @@ services:
 
   otel-collector:
     container_name: otel-collector
-    image: otel/opentelemetry-collector-contrib:0.160.0
+    image: otel/opentelemetry-collector-contrib:0.161.0
     command: [ "--config=/etc/otel-collector-config.yaml" ]
     volumes:
       - ./otel-collector/otel-collector.yaml:/etc/otel-collector-config.yaml:ro
